@@ -27,12 +27,12 @@ A production setup should of course separate these, to allow for individual URLs
 <dd>A: You can connect to the PHP container using `docker compose exec -it php /bin/bash`. When using Git for Windows, use `//bin/bash` (with an extra slash).</dd>
 
 <dt>Q: I need some data to use this!</dt>
-<dd>A: Either add your own using the `db` container or [PHPMyAdmin](http://symfony.localhost:8080), or run `php bin/console doctrine:query:sql "$(< import/product.sql)"` to import some demo products.</dd>
+<dd>A: Use the default UI or add your own using the `db` container or [PHPMyAdmin](http://symfony.localhost:8080), or run `php bin/console doctrine:query:sql "$(< import/product.sql)"` to import some demo products.</dd>
 </dl>
 
 ## API
 
-Below is a table overview for the (possibly not) implemented API endpoints:
+Below is a table overview for the (possibly not yet) implemented API endpoints:
 
 | Method     | Endpoint                               | Functionality                  |
 |------------|----------------------------------------|--------------------------------|
