@@ -16,33 +16,42 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ProductRepository extends ServiceEntityRepository
 {
+    /**
+     * @param \Doctrine\Persistence\ManagerRegistry $registry
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Product::class);
     }
 
-//    /**
-//     * @return Product[] Returns an array of Product objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('p')
-//            ->andWhere('p.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('p.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+   /**
+    * @param string $name
+    *
+    * @return Product[] Returns an array of Product objects
+    */
+   public function findByName($name): array
+   {
+       return $this->createQueryBuilder('p')
+           ->andWhere('p.name = :name')
+           ->setParameter('name', $name)
+           ->orderBy('p.id', 'ASC')
+           ->getQuery()
+           ->getResult()
+       ;
+   }
 
-//    public function findOneBySomeField($value): ?Product
-//    {
-//        return $this->createQueryBuilder('p')
-//            ->andWhere('p.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+   /**
+    * @param string $name
+    *
+    * @return Product|null A product with the given name.
+    */
+   public function findOneByName(string $name): ?Product
+   {
+       return $this->createQueryBuilder('p')
+           ->andWhere('p.name = :name')
+           ->setParameter('name', $name)
+           ->getQuery()
+           ->getOneOrNullResult()
+       ;
+   }
 }
