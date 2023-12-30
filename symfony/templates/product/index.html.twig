@@ -1,45 +1,26 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Product index{% endblock %}
+{% block title %}{{ 'Products'|trans }}{% endblock %}
 
 {% block body %}
-    <h1>Product index</h1>
+    <h1>{{ 'Products'|trans }}</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th>ImageUrl</th>
-                <th>Price</th>
-                <th>Created</th>
-                <th>Status</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for product in products %}
-            <tr>
-                <td>{{ product.id }}</td>
-                <td>{{ product.name }}</td>
-                <td>{{ product.description }}</td>
-                <td>{{ product.imageUrl }}</td>
-                <td>{{ product.price }}</td>
-                <td>{{ product.created ? product.created|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ product.status ? 'Yes' : 'No' }}</td>
-                <td>
-                    <a href="{{ path('app_product_show', {'id': product.id}) }}">show</a>
-                    <a href="{{ path('app_product_edit', {'id': product.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="8">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    {% block products %}
+        <section class="grid">
+            {% for product in products %}
+                {% include 'component/product-card.html.twig' with {
+                    product: product,
+                    cssClass: 'col col--4',
+                } only %}
+            {% else %}
+                <p class="col">
+                    {{ 'There are no products yet'|trans }}
+                </p>
+            {% endfor %}
+        </section>
+    {% endblock %}
 
-    <a href="{{ path('app_product_new') }}">Create new</a>
+    {% block add %}
+        <a href="{{ path('app_product_new') }}" class="button">➕ {{ 'Create new'|trans }}</a>
+    {% endblock %}
 {% endblock %}

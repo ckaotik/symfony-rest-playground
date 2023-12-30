@@ -1,11 +1,13 @@
-<article style="display: inline-block; padding: 0 1rem; width: 300px;">
+<article class="product{{ not product.status ? ' sold-out' }} {{ cssClass }}">
     <h3>
         <a href="{{ path('app_product_show', { id: product.id }) }}">{{ product.name }}</a>
-        <a href="{{ path('app_product_edit', { id: product.id }) }}" style="float: right;">🖊️</a>
+        <a href="{{ path('app_product_edit', { id: product.id }) }}" title="{{ 'Edit @name'|trans({ '@name': product.name}) }}" class="button button--icon">🖊️</a>
     </h3>
-    <img src="{{ product.imageUrl }}"/>
+    <figure class="expand">
+        <img src="{{ product.imageUrl }}"/>
+    </figure>
     <p>{{ product.description }}</p>
-    <p style="text-align: right;">
+    <p class="text-right">
         {% if product.status -%}
             {{ product.price|format_currency('EUR') }}
         {% else %}
