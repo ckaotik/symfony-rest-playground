@@ -13,9 +13,10 @@
     <body>
         {% block header %}
             <navigation>
-                <ul style="list-style: none; margin: unset; padding: unset;">
+                <ul class="inline-list">
                     <li style="display: inline-block;"><a href="{{ path('home') }}">Homepage</a></li>
                     <li style="display: inline-block;"><a href="{{ path('app_product_index') }}">Products</a></li>
+                    <li style="display: inline-block;"><a href="{{ path('app_cart_index') }}">Carts</a></li>
                 </ul>
             </navigation>
         {% endblock %}

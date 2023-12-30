@@ -109,6 +109,18 @@ a.button:hover {
     width: 100%;
 }
 
+.inline-list {
+    list-style: none;
+    margin: unset;
+    padding: unset;
+}
+.inline-list li {
+    display: inline-block;
+}
+.inline-list li:not(:last-child)::after {
+    content: ' • ';
+}
+
 /* @media(min-width: var(--breakpoint-large)) {} */
 
 /* Components */
