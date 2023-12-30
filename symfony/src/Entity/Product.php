@@ -57,6 +57,9 @@ class Product
         if (isset($initialValues['price'])) {
             $this->setPrice(intval($initialValues['price']));
         }
+        if (isset($initialValues['status'])) {
+            $this->setStatus((bool)$initialValues['status']);
+        }
         $this->created = new DateTime($initialValues['created'] ?? 'now');
     }
 
