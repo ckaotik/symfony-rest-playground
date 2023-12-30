@@ -1,0 +1,59 @@
+version: '3.9'
+services:
+    db:
+        image: mysql:8.2
+        command: ["--default-authentication-plugin=mysql_native_password"]
+        ports:
+            - "${MYSQL_PORT}:3306"
+        environment:
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+            MYSQL_DATABASE: ${MYSQL_DATABASE}
+            MYSQL_USER: ${MYSQL_USER}
+            MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+        volumes:
+            - ./db:/var/lib/mysql
+
+    php:
+        build:
+            context: ./docker/php
+            args:
+                PHP_XDEBUG_MODE: ${PHP_XDEBUG_MODE}
+                PHP_XDEBUG_CLIENT_PORT: ${PHP_XDEBUG_CLIENT_PORT}
+                PHP_XDEBUG_CLIENT_HOST: ${PHP_XDEBUG_CLIENT_HOST}
+                GIT_USER_EMAIL: ${GIT_USER_EMAIL}
+                GIT_USER_NAME: ${GIT_USER_NAME}
+        ports:
+            - "${PHP_PORT}:9001"
+        volumes:
+            - ./symfony:/var/www/symfony:cached
+            - ./logs/symfony:/var/www/symfony/var/log:cached
+        depends_on:
+            - db
+
+    phpmyadmin:
+        image: phpmyadmin:5.2.0
+        environment:
+            - PMA_HOST=db
+            - PMA_USER=root
+            - PMA_PASSWORD=${MYSQL_ROOT_PASSWORD}
+        ports:
+            - "${PHPMYADMIN_PORT}:80"
+        restart: always
+
+    nginx:
+        build: 
+            context: ./docker/nginx
+            args:
+                NGINX_SERVER_NAME: ${NGINX_SERVER_NAME}
+        ports:
+            - "${NGINX_PORT}:80"
+        depends_on:
+            - php
+        environment:
+            - NGINX_ENVSUBST_OUTPUT_DIR=/etc/nginx/conf.d
+            - NGINX_ENVSUBST_TEMPLATE_DIR=/etc/nginx/templates
+            - NGINX_ENVSUBST_TEMPLATE_SUFFIX=.template
+            - NGINX_SERVER_NAME=${NGINX_SERVER_NAME}
+        volumes:
+            - ./symfony:/var/www/symfony:cached
+            - ./logs/nginx:/var/log/nginx:cached

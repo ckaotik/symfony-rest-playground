@@ -1,0 +1,11 @@
+# volumes
+/logs
+/db
+
+/.env
+/.env.*
+!.env.example
+
+# IDE setting
+## PhpStorm
+.idea
