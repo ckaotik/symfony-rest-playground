@@ -8,8 +8,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/api/v1')]
-class ProductsController extends AbstractController {
+#[Route('/api/v1/products')]
+class ProductsResource extends AbstractController {
     protected ProductRepositoryInterface $productRepository;
 
     /**
@@ -24,8 +24,16 @@ class ProductsController extends AbstractController {
      *
      * @param \Symfony\Component\HttpFoundation\Request $request
      */
-    #[Route('/products', name: 'products.get', methods: ['GET'])]
-    public function get(Request $request): JsonResponse {
+    #[Route('/', name: 'products.list', methods: ['GET'])]
+    public function list(Request $request): JsonResponse {
         return $this->json($this->productRepository->findAll());
+    }
+
+    /**
+     * Get a product by id.
+     */
+    #[Route('/{id}', name: 'products.get', methods: ['GET'], requirements: ['id' => '\d+'])]
+    public function get(int $id): JsonResponse {
+        return $this->json($this->productRepository->find($id));
     }
 }
