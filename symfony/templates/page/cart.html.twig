@@ -1,11 +1,47 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ 'Warenkorb'|trans }}{% endblock %}
+{% block title %}{{ 'Cart'|trans }}{% endblock %}
 
 {% block body %}
-    <h1>{{ 'Warenkorb'|trans }}</h1>
+    <h1>{{ 'Cart'|trans }}</h1>
 
-    <section>
-        TODO
-    </section>
+    {% if cart.comment %}
+        <p><span class="label">{{ 'Comment'|trans }}:</span> {{ cart.comment }}</p>
+    {% endif %}
+
+    {% block positions %}
+        <section class="grid">
+            {% for position in cart.positions %}
+                {% embed 'component/product-card.html.twig' with {
+                    product: position.product,
+                    cssClass: 'col col--4',
+                    quantity: position.quantity,
+                } only %}
+                    {% block adminActions -%}
+                        <span> &times; {{ quantity }}</span>
+                    {%- endblock %}
+
+                    {% block actions %}
+                        {% if product.status %}
+                            <a href="#todo" class="button">➖</a>
+                            <a href="#todo" class="button">➕</a>
+                        {% endif %}
+                        <a href="#todo" class="button" title="{{ 'Remove from cart'|trans }}">🪣</a>
+                    {% endblock %}
+
+                    {% block price %}
+                        {{ (product.price * quantity)|format_currency('EUR') }}
+                    {% endblock %}
+                {% endembed %}
+            {% else %}
+                <p class="col">
+                    {{ 'This cart is empty.'|trans }}
+                </p>
+            {% endfor %}
+        </section>
+    {% endblock %}
+
+    {# {% block add %}
+        <a href="{{ path('app_cart_new') }}" class="button">➕ {{ 'Create new'|trans }}</a>
+    {% endblock %} #}
 {% endblock %}

@@ -2,7 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Cart;
+use App\Repository\CartRepository;
 use App\Repository\ProductRepositoryInterface;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -41,5 +44,21 @@ class DefaultController extends AbstractController {
             '/api/' . static::CURRENT_API_VERSION . '/' . $version,
             Response::HTTP_MOVED_PERMANENTLY
         );
+    }
+
+    /**
+     * Display a cart.
+     */
+    #[Route('/cart', name: 'app_cart_index', methods: ['GET'])]
+    #[Route('/cart/{id}', name: 'app_cart_show', requirements: ['cart' => '\d+'])]
+    function cart(CartRepository $entityRepository, Cart $cart = null): Response {
+        if ($cart === null) {
+            // Show the most recent cart.
+            $cart = $entityRepository->findOneBy([], ['updated' => 'DESC']);
+        }
+
+        return $this->render('page/cart.html.twig', [
+            'cart' => $cart,
+        ]);
     }
 }

@@ -1,7 +1,9 @@
 <article class="product{{ not product.status ? ' sold-out' }} {{ cssClass }}">
     <h3>
         {{- product.name -}}
-        <a href="{{ path('app_product_edit', { id: product.id }) }}" title="{{ 'Edit @name'|trans({ '@name': product.name}) }}" class="button button--icon">🖊️</a>
+        {% block adminActions %}
+            <a href="{{ path('app_product_edit', { id: product.id }) }}" title="{{ 'Edit @name'|trans({ '@name': product.name}) }}" class="button button--icon">🖊️</a>
+        {% endblock %}
     </h3>
     <figure class="expand">
         <img src="{{ product.imageUrl }}"/>
@@ -9,19 +11,21 @@
     <p>{{ product.description }}</p>
     <div class="grid grid--justify">
         <div class="col">
-            {% if product.status -%}
-                <a href="#todo" class="button">{{ 'Add to cart'|trans }}</a>
-            {% else %}
-                <span class="button btn--danger text-right">{{ 'Sold out!'|trans|upper }}</span>
-            {%- endif %}
+            {% block actions %}
+                {% if product.status -%}
+                    <a href="#todo" class="button">{{ 'Add to cart'|trans }}</a>
+                {% else %}
+                    <span class="button btn--danger text-right">{{ 'Sold out!'|trans|upper }}</span>
+                {%- endif %}
+            {% endblock %}
         </div>
 
         <div class="col">
-            {% if product.status -%}
+            {% block price %}
+                {% if not product.status -%}<s>{% endif %}
                 {{ product.price|format_currency('EUR') }}
-            {% else %}
-                <s>{{ product.price|format_currency('EUR') }}</s>
-            {%- endif %}
+                {% if not product.status -%}</s>{% endif %}
+            {% endblock %}
         </div>
     </div>
 </article>
