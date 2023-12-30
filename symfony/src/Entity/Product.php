@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\ProductRepository;
+use DateTime;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -39,6 +40,26 @@ class Product
 
     #[ORM\Column]
     private ?bool $status = self::STATUS_INACTIVE;
+
+    /**
+     * Provide defaults during construction.
+     */
+    public function __construct(array $initialValues = [])
+    {
+        if (isset($initialValues['name'])) {
+            $this->setName((string)$initialValues['name']);
+        }
+        if (isset($initialValues['description'])) {
+            $this->setDescription((string)$initialValues['description']);
+        }
+        if (isset($initialValues['imageUrl'])) {
+            $this->setImageUrl((string)$initialValues['imageUrl']);
+        }
+        if (isset($initialValues['price'])) {
+            $this->setPrice(intval($initialValues['price']));
+        }
+        $this->created = new DateTime($initialValues['created'] ?? 'now');
+    }
 
     public function getId(): ?int
     {
