@@ -2,26 +2,36 @@
 
 namespace App\Controller;
 
+use App\Client\ApiClientInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class CartController extends AbstractController
 {
+    protected ApiClientInterface $apiClient;
+
+    /**
+     * @param \App\Client\ApiClientInterface $apiClient
+     */
+    public function __construct(ApiClientInterface $apiClient)
+    {
+        $this->apiClient = $apiClient;
+    }
+
     /**
      * Create a new cart.
      */
     #[Route('/cart/add', name: 'app_cart_add')]
     public function add(): Response
     {
-        $result = $this->handleApiRequest('/carts/', 'POST', [
+        [$statusCode, $result] = $this->apiClient->handleJsonCall('/carts/', 'POST', [
             'comment' => 'New cart',
         ]);
 
-        if (is_object($result) && isset($result->error)) {
-            $this->addFlash('error', sprintf('Failed to create new cart: %s', $result->error));
+        if ($statusCode !== Response::HTTP_CREATED) {
+            $this->addFlash('error', sprintf('Failed to create new cart: %s', $result));
 
             return $this->redirectToRoute('app_cart_index');
         }
@@ -37,10 +47,10 @@ class CartController extends AbstractController
     #[Route('/cart/{id}/delete', name: 'app_cart_delete', requirements: ['id' => '\d+'])]
     public function delete(int $id): Response
     {
-        $result = $this->handleApiRequest('/carts/' . $id, 'DELETE');
+        [$statusCode, $result] = $this->apiClient->handleJsonCall('/carts/' . $id, 'DELETE');
 
-        if (is_object($result) && isset($result->error)) {
-            $this->addFlash('error', sprintf('Failed to delete cart %d: %s', $id, $result->error));
+        if ($statusCode !== Response::HTTP_NO_CONTENT) {
+            $this->addFlash('error', sprintf('Failed to delete cart %d: %s', $id, $result));
 
             return $this->redirectToRoute('app_cart_show', ['id' => $id]);
         }
@@ -56,10 +66,10 @@ class CartController extends AbstractController
     #[Route('/cart/{id}/clear', name: 'app_cart_clear', requirements: ['id' => '\d+'])]
     public function clear(int $id): Response
     {
-        $result = $this->handleApiRequest('/carts/' . $id . '/positions/', 'DELETE');
+        [$statusCode, $result] = $this->apiClient->handleJsonCall('/carts/' . $id . '/positions/', 'DELETE');
 
-        if (is_object($result) && isset($result->error)) {
-            $this->addFlash('error', sprintf('Failed to clear cart %d: %s', $id, $result->error));
+        if ($statusCode !== Response::HTTP_NO_CONTENT) {
+            $this->addFlash('error', sprintf('Failed to clear cart %d: %s', $id, $result));
 
             return $this->redirectToRoute('app_cart_show', ['id' => $id]);
         }
@@ -82,10 +92,10 @@ class CartController extends AbstractController
     )]
     public function removePosition(int $cart_id, int $id): Response
     {
-        $result = $this->handleApiRequest('/carts/' . $cart_id . '/positions/' . $id, 'DELETE');
+        [$statusCode, $result] = $this->apiClient->handleJsonCall('/carts/' . $cart_id . '/positions/' . $id, 'DELETE');
 
-        if (is_object($result) && isset($result->error)) {
-            $this->addFlash('error', sprintf('Failed to remove cart position %d: %s', $id, $result->error));
+        if ($statusCode !== Response::HTTP_NO_CONTENT) {
+            $this->addFlash('error', sprintf('Failed to remove cart position %d: %s', $id, $result));
         } else {
             $this->addFlash('success', sprintf('Removed cart position %d', $id));
         }
@@ -106,13 +116,13 @@ class CartController extends AbstractController
     )]
     public function addPosition(Request $request, int $cart_id, int $product_id): Response
     {
-        $result = $this->handleApiRequest('/carts/' . $cart_id . '/positions/', 'POST', [
+        [$statusCode, $result] = $this->apiClient->handleJsonCall('/carts/' . $cart_id . '/positions/', 'POST', [
             'product' => $product_id,
             'quantity' => $request->query->get('quantity'),
         ]);
 
-        if (is_object($result) && isset($result->error)) {
-            $this->addFlash('error', sprintf('Failed to add product to cart: %s', $result->error));
+        if ($statusCode !== Response::HTTP_CREATED) {
+            $this->addFlash('error', sprintf('Failed to add product to cart: %s', $result));
         } else {
             $this->addFlash('success', sprintf('Added product to cart.'));
         }
@@ -133,13 +143,13 @@ class CartController extends AbstractController
     )]
     public function updatePosition(Request $request, int $cart_id, int $id): Response
     {
-        $result = $this->handleApiRequest('/carts/' . $cart_id . '/positions/' . $id, 'PUT', [
+        [$statusCode, $result] = $this->apiClient->handleJsonCall('/carts/' . $cart_id . '/positions/' . $id, 'PUT', [
             'product' => $request->query->get('product'),
             'quantity' => $request->query->get('quantity'),
         ]);
 
-        if (is_object($result) && isset($result->error)) {
-            $this->addFlash('error', sprintf('Failed to update cart product: %s', $result->error));
+        if ($statusCode !== Response::HTTP_OK) {
+            $this->addFlash('error', sprintf('Failed to update cart product: %s', $result));
         } else {
             $this->addFlash('success', sprintf('Updated cart product.'));
         }
@@ -154,48 +164,28 @@ class CartController extends AbstractController
     #[Route('/cart/{id}', name: 'app_cart_show', requirements: ['cart' => '\d+'])]
     public function show(int $id = null): Response
     {
-        $carts = $this->handleApiRequest('/carts/', 'GET');
-        if (is_object($carts) && isset($carts->error)) {
+        [$statusCode, $carts] = $this->apiClient->handleJsonCall('/carts/', 'GET');
+        if ($statusCode !== Response::HTTP_OK) {
             $carts = [];
         }
 
-        // Show the most recently added cart unless explicitly specified.
-        $cart = end($carts);
         if ($id !== null) {
-            $cart = $this->handleApiRequest('/carts/' . $id, 'GET');
+            [, $cart] = $this->apiClient->handleJsonCall('/carts/' . $id, 'GET');
+        } else {
+            // Show the most recently added cart.
+            $cart = end($carts);
+        }
+
+        if (!$cart) {
+            // Create a new cart.
+            [$statusCode, $cart] = $this->apiClient->handleJsonCall('/carts/', 'POST', [
+                'comment' => 'Cart',
+            ]);
         }
 
         return $this->render('page/cart.html.twig', [
             'cart' => $cart,
             'carts' => $carts,
         ]);
-    }
-
-    /**
-     * @param string $endpoint
-     * @param string $method
-     * @param array<mixed> $request
-     * @param array<mixed> $query
-     *
-     * @todo Figure out why local Docker setup refuses to connect to our own URLs via http_client.
-     */
-    protected function handleApiRequest(
-        string $endpoint,
-        string $method = 'GET',
-        array $request = [],
-        array $query = []
-    ): mixed {
-        $url = '/api/v1' . $endpoint;
-        if ($query) {
-            $url .= '?' . http_build_query($query);
-        }
-        $subRequest = Request::create($url, $method, $request);
-
-        /** @var Response $response */
-        $response = $this->container->get('http_kernel')
-            ->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
-
-
-        return json_decode($response->getContent() ?: '');
     }
 }

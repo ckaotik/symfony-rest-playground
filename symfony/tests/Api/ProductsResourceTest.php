@@ -9,21 +9,21 @@ class ProductsResourceTest extends ApiTestBase
     public function testRedirect(): void
     {
         // Symfony redirects on missing trailing slash.
-        [$statusCode, $result] = $this->handleJsonCall('/products');
+        [$statusCode, $result] = $this->apiClient->handleJsonCall('/products');
         $this->assertSame(301, $statusCode);
     }
 
     public function testList(): void
     {
-        [$statusCode, $results] = $this->handleJsonCall('/products/', 'GET');
+        [$statusCode, $results] = $this->apiClient->handleJsonCall('/products/', 'GET');
         $this->assertSame(Response::HTTP_OK, $statusCode);
         $this->assertNotEmpty($results);
 
-        [$statusCode, $result] = $this->handleJsonCall('/products/', 'POST', ['name' => 'Product A']);
+        [$statusCode, $result] = $this->apiClient->handleJsonCall('/products/', 'POST', ['name' => 'Product A']);
         $this->assertSame(Response::HTTP_CREATED, $statusCode);
         $this->assertEquals('Product A', $result->name);
 
-        [$statusCode, $results] = $this->handleJsonCall('/products/');
+        [$statusCode, $results] = $this->apiClient->handleJsonCall('/products/');
         $this->assertSame(Response::HTTP_OK, $statusCode);
         $this->assertNotEmpty($results);
         $this->assertEquals($result, end($results));
@@ -36,20 +36,20 @@ class ProductsResourceTest extends ApiTestBase
      */
     public function testCrud(array $productData)
     {
-        [$statusCode, $result] = $this->handleJsonCall('/products/', 'POST', $productData);
+        [$statusCode, $result] = $this->apiClient->handleJsonCall('/products/', 'POST', $productData);
         $resultData = (array)$result;
         $this->assertSame(Response::HTTP_CREATED, $statusCode);
         $this->assertEquals($resultData, $productData + $resultData);
 
-        [$statusCodeGet, $resultGet] = $this->handleJsonCall('/products/' . $result->id, 'GET');
+        [$statusCodeGet, $resultGet] = $this->apiClient->handleJsonCall('/products/' . $result->id, 'GET');
         $this->assertSame(Response::HTTP_OK, $statusCodeGet);
         $this->assertEquals($resultGet, $result);
 
-        [$statusCode, $result] = $this->handleJsonCall('/products/' . $result->id, 'DELETE');
+        [$statusCode, $result] = $this->apiClient->handleJsonCall('/products/' . $result->id, 'DELETE');
         $this->assertSame(Response::HTTP_NO_CONTENT, $statusCode);
         $this->assertNull($result);
 
-        [$statusCodeGet, $result] = $this->handleJsonCall('/products/' . $resultGet->id, 'GET');
+        [$statusCodeGet, $result] = $this->apiClient->handleJsonCall('/products/' . $resultGet->id, 'GET');
         $this->assertSame(Response::HTTP_NOT_FOUND, $statusCodeGet);
         $this->assertNull($result);
     }

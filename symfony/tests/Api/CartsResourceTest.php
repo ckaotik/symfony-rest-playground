@@ -8,17 +8,17 @@ class CartsResourceTest extends ApiTestBase
 {
     public function testList(): void
     {
-        [$statusCode, $results] = $this->handleJsonCall('/carts/', 'GET', [
+        [$statusCode, $results] = $this->apiClient->handleJsonCall('/carts/', 'GET', [
             'comment' => 'These are not the carts you are looking for.',
         ]);
         $this->assertSame(Response::HTTP_OK, $statusCode);
         $this->assertEmpty($results);
 
-        [$statusCode, $result] = $this->handleJsonCall('/carts/', 'POST', ['comment' => 'New cart']);
+        [$statusCode, $result] = $this->apiClient->handleJsonCall('/carts/', 'POST', ['comment' => 'New cart']);
         $this->assertSame(Response::HTTP_CREATED, $statusCode);
         $this->assertEquals('New cart', $result->comment);
 
-        [$statusCode, $results] = $this->handleJsonCall('/carts/', 'GET', [
+        [$statusCode, $results] = $this->apiClient->handleJsonCall('/carts/', 'GET', [
             'comment' => 'New cart',
         ]);
         $this->assertSame(Response::HTTP_OK, $statusCode);
@@ -33,7 +33,7 @@ class CartsResourceTest extends ApiTestBase
      */
     public function testCrud(array $entityData)
     {
-        [$statusCode, $result] = $this->handleJsonCall('/carts/', 'POST', $entityData);
+        [$statusCode, $result] = $this->apiClient->handleJsonCall('/carts/', 'POST', $entityData);
         $this->assertSame(Response::HTTP_CREATED, $statusCode);
         $this->assertEquals(count($entityData['positions'] ?? []), count($result->positions));
         foreach ($entityData['positions'] ?? [] as $index => $position) {
@@ -41,15 +41,15 @@ class CartsResourceTest extends ApiTestBase
             $this->assertSame($position['quantity'] ?? 1, $result->positions[$index]->quantity);
         }
 
-        [$statusCode, $resultGet] = $this->handleJsonCall('/carts/' . $result->id, 'GET');
+        [$statusCode, $resultGet] = $this->apiClient->handleJsonCall('/carts/' . $result->id, 'GET');
         $this->assertSame(Response::HTTP_OK, $statusCode);
         $this->assertEquals($resultGet, $result);
 
-        [$statusCode, $result] = $this->handleJsonCall('/carts/' . $resultGet->id, 'DELETE');
+        [$statusCode, $result] = $this->apiClient->handleJsonCall('/carts/' . $resultGet->id, 'DELETE');
         $this->assertSame(Response::HTTP_NO_CONTENT, $statusCode);
         $this->assertNull($result);
 
-        [$statusCode, $result] = $this->handleJsonCall('/carts/' . $resultGet->id, 'GET');
+        [$statusCode, $result] = $this->apiClient->handleJsonCall('/carts/' . $resultGet->id, 'GET');
         $this->assertSame(Response::HTTP_NOT_FOUND, $statusCode);
         $this->assertNull($result);
     }
