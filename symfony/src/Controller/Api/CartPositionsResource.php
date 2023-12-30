@@ -4,7 +4,6 @@ namespace App\Controller\Api;
 
 use App\Entity\Cart;
 use App\Entity\CartPosition;
-use App\Entity\Product;
 use App\Model\CartPositionDTO;
 use App\Repository\CartPositionRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
@@ -83,9 +82,9 @@ class CartPositionsResource extends AbstractController
             return $this->json(null, JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return $this->json($entity, JsonResponse::HTTP_OK, [
+        return $this->json(null, JsonResponse::HTTP_NO_CONTENT, [
             'Location' => $this->generateUrl(
-                'cart.get',
+                'carts.get',
                 ['id' => $entity->getId()],
                 UrlGeneratorInterface::ABSOLUTE_URL
             ),

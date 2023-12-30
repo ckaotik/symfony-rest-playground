@@ -15,9 +15,9 @@ class ProductsResourceTest extends ApiTestBase
 
     public function testList(): void
     {
-        [$statusCode, $results] = $this->handleJsonCall('/products/');
+        [$statusCode, $results] = $this->handleJsonCall('/products/', 'GET');
         $this->assertSame(Response::HTTP_OK, $statusCode);
-        $this->assertEmpty($results);
+        $this->assertNotEmpty($results);
 
         [$statusCode, $result] = $this->handleJsonCall('/products/', 'POST', ['name' => 'Product A']);
         $this->assertSame(Response::HTTP_CREATED, $statusCode);
@@ -26,7 +26,7 @@ class ProductsResourceTest extends ApiTestBase
         [$statusCode, $results] = $this->handleJsonCall('/products/');
         $this->assertSame(Response::HTTP_OK, $statusCode);
         $this->assertNotEmpty($results);
-        $this->assertEquals($result, $results[0]);
+        $this->assertEquals($result, end($results));
     }
 
     /**
@@ -47,11 +47,11 @@ class ProductsResourceTest extends ApiTestBase
 
         [$statusCode, $result] = $this->handleJsonCall('/products/' . $result->id, 'DELETE');
         $this->assertSame(Response::HTTP_NO_CONTENT, $statusCode);
-        $this->assertSame(null, $result);
+        $this->assertNull($result);
 
         [$statusCodeGet, $result] = $this->handleJsonCall('/products/' . $resultGet->id, 'GET');
         $this->assertSame(Response::HTTP_NOT_FOUND, $statusCodeGet);
-        $this->assertSame(null, $result);
+        $this->assertNull($result);
     }
 
     /**

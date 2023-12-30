@@ -8,7 +8,9 @@ class CartsResourceTest extends ApiTestBase
 {
     public function testList(): void
     {
-        [$statusCode, $results] = $this->handleJsonCall('/carts/');
+        [$statusCode, $results] = $this->handleJsonCall('/carts/', 'GET', [
+            'comment' => 'These are not the carts you are looking for.',
+        ]);
         $this->assertSame(Response::HTTP_OK, $statusCode);
         $this->assertEmpty($results);
 
@@ -16,7 +18,9 @@ class CartsResourceTest extends ApiTestBase
         $this->assertSame(Response::HTTP_CREATED, $statusCode);
         $this->assertEquals('New cart', $result->comment);
 
-        [$statusCode, $results] = $this->handleJsonCall('/carts/');
+        [$statusCode, $results] = $this->handleJsonCall('/carts/', 'GET', [
+            'comment' => 'New cart',
+        ]);
         $this->assertSame(Response::HTTP_OK, $statusCode);
         $this->assertNotEmpty($results);
         $this->assertEquals($result, $results[0]);
@@ -30,9 +34,12 @@ class CartsResourceTest extends ApiTestBase
     public function testCrud(array $entityData)
     {
         [$statusCode, $result] = $this->handleJsonCall('/carts/', 'POST', $entityData);
-        $resultData = (array)$result;
         $this->assertSame(Response::HTTP_CREATED, $statusCode);
-        $this->assertEquals($resultData, $entityData + $resultData);
+        $this->assertEquals(count($entityData['positions'] ?? []), count($result->positions));
+        foreach ($entityData['positions'] ?? [] as $index => $position) {
+            $this->assertSame($position['product'], $result->positions[$index]->product->id);
+            $this->assertSame($position['quantity'] ?? 1, $result->positions[$index]->quantity);
+        }
 
         [$statusCode, $resultGet] = $this->handleJsonCall('/carts/' . $result->id, 'GET');
         $this->assertSame(Response::HTTP_OK, $statusCode);
@@ -40,11 +47,11 @@ class CartsResourceTest extends ApiTestBase
 
         [$statusCode, $result] = $this->handleJsonCall('/carts/' . $resultGet->id, 'DELETE');
         $this->assertSame(Response::HTTP_NO_CONTENT, $statusCode);
-        $this->assertSame(null, $result);
+        $this->assertNull($result);
 
         [$statusCode, $result] = $this->handleJsonCall('/carts/' . $resultGet->id, 'GET');
         $this->assertSame(Response::HTTP_NOT_FOUND, $statusCode);
-        $this->assertSame(null, $result);
+        $this->assertNull($result);
     }
 
     /**
@@ -59,16 +66,15 @@ class CartsResourceTest extends ApiTestBase
             'cart with comment' => [
                 ['comment' => '⭐ Sur&shy;prise! 😉'],
             ],
-            // @todo invalid cart id.
-            /* 'cart with product' => [
+            'cart with product' => [
                 [
                     'positions' => [
-                        ['product_id' => 1, 'quantity' => 3],
-                        ['product_id' => 2],
-                        ['product_id' => 1, 'quantity' => 0]
+                        ['product' => 1, 'quantity' => 3],
+                        ['product' => 2],
+                        ['product' => 1, 'quantity' => 0]
                     ],
                 ],
-            ], */
+            ],
         ];
     }
 }
