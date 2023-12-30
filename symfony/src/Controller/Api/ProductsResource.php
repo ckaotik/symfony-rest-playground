@@ -47,8 +47,13 @@ class ProductsResource extends AbstractController
         $limit = min($request->query->get('limit', INF), static::MAX_RESULTS);
         $offset = intval($request->query->get('offset', null));
 
+        $criteria = [];
+        if ($name = $request->query->get('name')) {
+            $criteria['name'] = $name;
+        }
+
         return $this->json(
-            $this->entityRepository->findBy([], ['id' => 'ASC'], $limit, $offset)
+            $this->entityRepository->findBy($criteria, ['id' => 'ASC'], $limit, $offset)
         );
     }
 
