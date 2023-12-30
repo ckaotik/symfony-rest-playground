@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "87eb142ff4860a74e1bc5dba49a7f71b",
+    "content-hash": "85ce6348e51a004b6b688fab4101f4ad",
     "packages": [
         {
             "name": "composer/semver",
@@ -7418,6 +7418,70 @@
             "time": "2023-11-21T14:02:01+00:00"
         },
         {
+            "name": "twig/intl-extra",
+            "version": "v3.8.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/twigphp/intl-extra.git",
+                "reference": "7b3db67c700735f473a265a97e1adaeba3e6ca0c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/twigphp/intl-extra/zipball/7b3db67c700735f473a265a97e1adaeba3e6ca0c",
+                "reference": "7b3db67c700735f473a265a97e1adaeba3e6ca0c",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2.5",
+                "symfony/intl": "^5.4|^6.0|^7.0",
+                "twig/twig": "^3.0"
+            },
+            "require-dev": {
+                "symfony/phpunit-bridge": "^6.4|^7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Twig\\Extra\\Intl\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
+                }
+            ],
+            "description": "A Twig extension for Intl",
+            "homepage": "https://twig.symfony.com",
+            "keywords": [
+                "intl",
+                "twig"
+            ],
+            "support": {
+                "source": "https://github.com/twigphp/intl-extra/tree/v3.8.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/twig/twig",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2023-11-21T17:27:48+00:00"
+        },
+        {
             "name": "twig/twig",
             "version": "v3.8.0",
             "source": {
@@ -7549,6 +7613,71 @@
         }
     ],
     "packages-dev": [
+        {
+            "name": "kint-php/kint",
+            "version": "5.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kint-php/kint.git",
+                "reference": "128303461092734a1e3cb4beb1eea9afe7a5a0ee"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kint-php/kint/zipball/128303461092734a1e3cb4beb1eea9afe7a5a0ee",
+                "reference": "128303461092734a1e3cb4beb1eea9afe7a5a0ee",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3",
+                "phpspec/prophecy-phpunit": "^2",
+                "phpunit/phpunit": "^9",
+                "seld/phar-utils": "^1",
+                "symfony/finder": ">=4.0",
+                "vimeo/psalm": "^5"
+            },
+            "suggest": {
+                "kint-php/kint-helpers": "Provides extra helper functions",
+                "kint-php/kint-twig": "Provides d() and s() functions in twig templates"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "init.php"
+                ],
+                "psr-4": {
+                    "Kint\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jonathan Vollebregt",
+                    "homepage": "https://github.com/jnvsor"
+                },
+                {
+                    "name": "Contributors",
+                    "homepage": "https://github.com/kint-php/kint/graphs/contributors"
+                }
+            ],
+            "description": "Kint - debugging tool for PHP developers",
+            "homepage": "https://kint-php.github.io/kint/",
+            "keywords": [
+                "debug",
+                "kint",
+                "php"
+            ],
+            "support": {
+                "issues": "https://github.com/kint-php/kint/issues",
+                "source": "https://github.com/kint-php/kint/tree/5.1.0"
+            },
+            "time": "2023-11-16T06:04:49+00:00"
+        },
         {
             "name": "masterminds/html5",
             "version": "2.8.1",
