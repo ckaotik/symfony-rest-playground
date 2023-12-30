@@ -5,8 +5,9 @@ namespace App\Controller\Api;
 use App\Entity\Cart;
 use App\Entity\CartPosition;
 use App\Entity\Product;
+use App\Model\CartPositionDTO;
+use App\Repository\CartPositionRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\EntityRepository;
 use Exception;
 use InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,9 +25,9 @@ class CartPositionsResource extends AbstractController
     protected EntityManagerInterface $entityManager;
 
     /**
-     * @var \Doctrine\ORM\EntityRepository<\App\Entity\CartPosition> $entityRepository
+     * @var \App\Repository\CartPositionRepositoryInterface<\App\Entity\CartPosition> $entityRepository
      */
-    protected EntityRepository $entityRepository;
+    protected CartPositionRepositoryInterface $entityRepository;
 
     protected const MAX_RESULTS = 50;
 
@@ -36,7 +37,10 @@ class CartPositionsResource extends AbstractController
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
-        $this->entityRepository = $entityManager->getRepository(CartPosition::class);
+
+        /** @var \App\Repository\CartPositionRepositoryInterface $entityRepository */
+        $entityRepository = $entityManager->getRepository(CartPosition::class);
+        $this->entityRepository = $entityRepository;
     }
 
     /**
@@ -184,30 +188,24 @@ class CartPositionsResource extends AbstractController
     /**
      * @param \App\Entity\CartPosition $entity
      * @param \Symfony\Component\HttpFoundation\Request $request
+     *
+     * @return void
      */
     protected function updateEntityFromRequest(CartPosition &$entity, Request $request): void
     {
-        $cart_id = $request->attributes->get('cart_id');
-        $idProduct = $request->request->get('product');
-        $quantity = intval($request->request->get('quantity', null));
+        $idCart = $request->attributes->get('cart_id');
+        $content = json_decode($request->getContent());
 
-        $cart = $this->entityManager->getRepository(Cart::class)->find($cart_id);
-        if ($cart === null) {
-            throw new InvalidArgumentException(sprintf('Invalid cart id %s', $cart_id));
+        $data = new CartPositionDTO();
+        foreach ($content as $property => $value) {
+            if (property_exists($data, $property)) {
+                $data->{$property} = $value;
+            }
         }
+        // Do not allow moving positions to another cart.
+        $data->cart = $idCart;
 
-        /** \App\Entity\Product $product */
-        $product = $idProduct
-            ? $this->entityManager->getRepository(Product::class)->find($idProduct)
-            : $entity->getProduct();
-        if (!$product) {
-            throw new InvalidArgumentException('Invalid product id.');
-        }
-
-        $entity
-            ->setCart($cart)
-            ->setProduct($product)
-            ->setQuantity($quantity ?: $entity->getQuantity());
+        $this->entityRepository->updateWithData($entity, $data);
 
         $this->entityManager->persist($entity);
         $this->entityManager->flush();

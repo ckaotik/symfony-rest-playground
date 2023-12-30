@@ -55,7 +55,8 @@ class ProductsResource extends AbstractController
     #[Route('/', name: 'products.add', methods: ['POST'])]
     public function add(Request $request): JsonResponse
     {
-        $entity = new Product($request->request->all());
+        $data = json_decode($request->getContent(), true);
+        $entity = new Product($data);
 
         try {
             $this->entityManager->persist($entity);

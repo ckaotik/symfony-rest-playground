@@ -54,7 +54,8 @@ class CartsResource extends AbstractController
     #[Route('/', name: 'carts.add', methods: ['POST'])]
     public function add(Request $request): JsonResponse
     {
-        $entity = new Cart($request->request->all());
+        $data = json_decode($request->getContent(), true);
+        $entity = new Cart($data);
 
         try {
             $this->entityManager->persist($entity);

@@ -34,7 +34,7 @@ abstract class ApiTestBase extends KernelTestCase
         $url = static::API_BASE_URL . $endpoint;
         $data = array_filter($data, fn($value) => $value !== null);
 
-        if (in_array($method, ['POST', 'PUT', 'PATCH'], true)) {
+        if (in_array($method, ['POST', 'PUT', 'PATCH', 'DELETE'], true)) {
             // Pass data in body.
         } elseif ($data) {
             // Pass data in URL query.
@@ -59,7 +59,7 @@ abstract class ApiTestBase extends KernelTestCase
      * @param string $method
      * @param array<string,bool|int|string> $data
      */
-    protected function httpClientRequest(string $url, string $method = 'GET', ?array $data = []): ResponseInterface
+    protected function httpClientRequest(string $url, string $method = 'GET', ?array $data = null): ResponseInterface
     {
         /** @var \Symfony\Contracts\HttpClient\HttpClientInterface $httpClient */
         $httpClient = static::getContainer()->get('http_client');
@@ -74,12 +74,12 @@ abstract class ApiTestBase extends KernelTestCase
      * @param string $method
      * @param array<string,bool|int|string> $data
      */
-    protected function httpKernelRequest(string $url, string $method = 'GET', ?array $data = []): Response
+    protected function httpKernelRequest(string $url, string $method = 'GET', ?array $data = null): Response
     {
         /** @var \Symfony\Component\HttpKernel\HttpKernelInterface $httpKernel */
         $httpKernel = static::getContainer()->get('http_kernel');
 
-        $subRequest = Request::create($url, $method, $data);
+        $subRequest = Request::create($url, $method, [], [], [], [], json_encode($data));
 
         return $httpKernel->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
     }
