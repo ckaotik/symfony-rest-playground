@@ -55,7 +55,7 @@ class ProductsResourceTest extends ApiTestBase
     }
 
     /**
-     * Provides data for ::testAdd.
+     * Provides data for ::testCrud.
      */
     public function provideProductData(): array
     {
