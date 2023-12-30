@@ -11,6 +11,11 @@
         {% endblock %}
     </head>
     <body>
+        {% block messages %}
+            {% include 'component/messages.html.twig' with {
+                flashMessages: app.flashes,
+            } only %}
+        {% endblock %}
         {% block header %}
             <navigation class="container">
                 <ul class="inline-list">

@@ -1,0 +1,19 @@
+{% set icons = {
+    success: '✅',
+    notice: '⚠️',
+    error: '❌',
+ } %}
+
+{% block body %}
+    {# Messages can only be read once, so we pre-render to check if we need the wrapper. #}
+    {% set renderedMessages -%}
+        {% for type, messages in flashMessages %}
+            {% for message in messages %}
+                <li class="alert alert-{{ type }}">{{ icons[type]|default }} {{ message }}</li>
+            {% endfor %}
+        {% endfor %}
+    {%- endset %}
+    {% if renderedMessages %}
+        <ul class="container">{{ renderedMessages|raw}}</ul>
+    {% endif %}
+{% endblock %}

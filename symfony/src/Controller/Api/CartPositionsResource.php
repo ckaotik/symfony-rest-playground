@@ -117,7 +117,10 @@ class CartPositionsResource extends AbstractController {
         return $this->json($entity, JsonResponse::HTTP_CREATED, [
             'Location' => $this->generateUrl(
                 'cart_positions.get',
-                ['id' => $entity->getId()],
+                [
+                    'cart_id' => $cart->getId(),
+                    'id' => $entity->getId(),
+                ],
                 UrlGeneratorInterface::ABSOLUTE_URL
             ),
         ]);
