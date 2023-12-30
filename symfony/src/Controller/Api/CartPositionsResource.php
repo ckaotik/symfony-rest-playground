@@ -159,6 +159,8 @@ class CartPositionsResource extends AbstractController {
 
     /**
      * Update a position by id.
+     *
+     * @todo DRY: Refactor with cart_positions.add.
      */
     #[Route('/{id}', name: 'cart_positions.update', methods: ['PUT'], requirements: ['id' => '\d+'])]
     public function update(Request $request, int $cart_id, int $id): JsonResponse {

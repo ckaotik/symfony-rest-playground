@@ -107,7 +107,7 @@ class CartController extends AbstractController {
     )]
     public function addPosition(Request $request, int $cart_id, int $product_id): Response
     {
-        $result = $this->handleApiRequest('/carts/' . $cart_id . '/positions/' . $product_id, 'POST', [
+        $result = $this->handleApiRequest('/carts/' . $cart_id . '/positions/', 'POST', [
             'product' => $product_id,
             'quantity' => $request->query->get('quantity'),
         ]);
