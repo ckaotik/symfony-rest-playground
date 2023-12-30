@@ -43,7 +43,7 @@ A production setup should of course separate these, to allow for individual URLs
 <dt>Q: How do I ensure my changes conform to the repo code standards?</dt>
 <dd>A: Some linters and sniffers are available inside of the symfony project:
     <ul>
-        <li>`./vendor/bin/phpcs --standard=PSR12 src` to check php code formatting</li>
+        <li>`./vendor/bin/phpcs --standard=PSR12 src tests` to check php code formatting</li>
         <li>`./vendor/bin/phpstan analyse --level=7 src tests` to run static analysis against your php code</li>
         <li>`php bin/console lint:twig templates/` to lint Twig templates</li>
     </ul>
