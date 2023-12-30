@@ -50,6 +50,16 @@ A production setup should of course separate these, to allow for individual URLs
         <li>`php bin/console lint:twig templates/` to lint Twig templates</li>
     </ul>
 </dd>
+
+<dt>Q: What's next?</dt>
+<dd>Possible extensions could be...
+    <ul>
+        <li>[Frontend browser tests](https://symfony.com/doc/current/testing.html#application-tests), [1](https://symfony.com/doc/current/the-fast-track/de/17-tests.html)</li>
+        <li>[Translatable entities](https://github.com/KnpLabs/DoctrineBehaviors/blob/master/docs/translatable.md)</li>
+        <li>More/proper [DTO mapping](https://symfony.com/blog/new-in-symfony-6-3-mapping-request-data-to-typed-objects)</li>
+        <li>And so much more!</li>
+    </ul>
+</dd>
 </dl>
 
 ## API Endpoints
