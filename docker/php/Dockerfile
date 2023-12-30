@@ -59,8 +59,8 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin -
 RUN curl -sS https://get.symfony.com/cli/installer | bash
 RUN mv ~/.symfony5/bin/symfony /usr/local/bin/symfony
 
-RUN apk add --update nodejs npm \
-    && npm install --global yarn
+# RUN apk add --update nodejs npm \
+#     && npm install --global yarn
 
 COPY symfony.ini /etc/php82/conf.d/
 COPY symfony.ini /etc/php82/cli/conf.d/

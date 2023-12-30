@@ -20,7 +20,9 @@ The project can be reached under https://symfony.localhost, and PHPmyAdmin is av
   `DATABASE_URL=mysql://root:root@db:3306/symfony php bin/console doctrine:query:sql --env=test "GRANT ALL PRIVILEGES ON symfony_test.* TO 'symfony'@'%';"`
 2. Install tables:
   `php bin/console doctrine:migrations:migrate -n --env=test`
-3. Run tests using `php bin/phpunit`
+3. Install fixtures:
+  `php bin/console --env=test doctrine:fixtures:load`
+4. Run tests using `php bin/phpunit`
 
 ## Structure
 
@@ -52,7 +54,7 @@ A production setup should of course separate these, to allow for individual URLs
 
 ## API Endpoints
 
-Below is a table overview for the (possibly not yet) implemented API endpoints:
+Below is a table overview for the currently implemented API endpoints:
 
 | Method     | Endpoint                               | Functionality                  |
 |------------|----------------------------------------|--------------------------------|
