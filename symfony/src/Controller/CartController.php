@@ -154,19 +154,22 @@ class CartController extends AbstractController
      */
     #[Route('/cart', name: 'app_cart_index')]
     #[Route('/cart/{id}', name: 'app_cart_show', requirements: ['cart' => '\d+'])]
-    public function show(CartRepository $entityRepository, Cart $cart = null): Response
+    public function show(int $id = null): Response
     {
-        if ($cart === null) {
-            // Show the most recent cart.
-            $cart = $entityRepository->findOneBy([], ['updated' => 'DESC']);
+        $carts = $this->handleApiRequest('/carts/', 'GET');
+        if (is_object($carts) && isset($carts->error)) {
+            $carts = [];
         }
 
-        $response = $this->forward('App\Controller\Api\CartsResource::list');
-        $result = json_decode($response->getContent());
+        // Show the most recently added cart unless explicitly specified.
+        $cart = end($carts);
+        if ($id !== null) {
+            $cart = $this->handleApiRequest('/carts/' . $id, 'GET');
+        }
 
         return $this->render('page/cart.html.twig', [
             'cart' => $cart,
-            'carts' => $result,
+            'carts' => $carts,
         ]);
     }
 
