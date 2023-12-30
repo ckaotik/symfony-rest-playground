@@ -3,6 +3,7 @@
 namespace App\Controller\Api;
 
 use App\Entity\Product;
+use App\Model\ProductDTO;
 use App\Repository\ProductRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -17,6 +18,10 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 class ProductsResource extends AbstractController
 {
     protected EntityManagerInterface $entityManager;
+
+    /**
+     * @var \App\Repository\ProductRepositoryInterface<\App\Entity\Product> $entityRepository
+     */
     protected ProductRepositoryInterface $entityRepository;
 
     protected const MAX_RESULTS = 50;
@@ -28,9 +33,7 @@ class ProductsResource extends AbstractController
     {
         $this->entityManager = $entityManager;
 
-        /**
-         * @var \App\Repository\ProductRepositoryInterface $entityRepository
-         */
+        /** @var \App\Repository\ProductRepositoryInterface $entityRepository */
         $entityRepository = $entityManager->getRepository(Product::class);
         $this->entityRepository = $entityRepository;
     }
@@ -55,17 +58,17 @@ class ProductsResource extends AbstractController
     #[Route('/', name: 'products.add', methods: ['POST'])]
     public function add(Request $request): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
-        $entity = new Product($data);
+        $entity = new Product();
 
         try {
-            $this->entityManager->persist($entity);
-            $this->entityManager->flush();
-        } catch (Exception $exception) {
+            $this->updateEntityFromRequest($entity, $request);
+        } catch (InvalidArgumentException $exception) {
             return $this->json(
                 ['error' => $exception->getMessage()],
                 JsonResponse::HTTP_BAD_REQUEST
             );
+        } catch (Exception $exception) {
+            return $this->json(null, JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return $this->json($entity, JsonResponse::HTTP_CREATED, [
@@ -93,11 +96,13 @@ class ProductsResource extends AbstractController
 
             $this->entityManager->remove($entity);
             $this->entityManager->flush();
-        } catch (Exception $exception) {
+        } catch (InvalidArgumentException $exception) {
             return $this->json(
                 ['error' => $exception->getMessage()],
                 JsonResponse::HTTP_BAD_REQUEST
             );
+        } catch (Exception $exception) {
+            return $this->json(null, JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return $this->json(null, JsonResponse::HTTP_NO_CONTENT);
@@ -112,5 +117,28 @@ class ProductsResource extends AbstractController
         $entity = $this->entityRepository->find($id);
 
         return $this->json($entity, $entity ? JsonResponse::HTTP_OK : JsonResponse::HTTP_NOT_FOUND);
+    }
+
+    /**
+     * @param \App\Entity\Product $entity
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     *
+     * @return void
+     */
+    protected function updateEntityFromRequest(Product &$entity, Request $request): void
+    {
+        $content = $request->getPayload();
+
+        $data = new ProductDTO();
+        foreach ($content->all() as $property => $value) {
+            if (property_exists($data, $property)) {
+                $data->{$property} = $value;
+            }
+        }
+
+        $this->entityRepository->updateWithData($entity, $data);
+
+        $this->entityManager->persist($entity);
+        $this->entityManager->flush();
     }
 }

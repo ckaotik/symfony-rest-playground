@@ -74,11 +74,13 @@ class CartPositionsResource extends AbstractController
         try {
             $this->entityManager->persist($entity);
             $this->entityManager->flush();
-        } catch (Exception $exception) {
+        } catch (InvalidArgumentException $exception) {
             return $this->json(
                 ['error' => $exception->getMessage()],
                 JsonResponse::HTTP_BAD_REQUEST
             );
+        } catch (Exception $exception) {
+            return $this->json(null, JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return $this->json($entity, JsonResponse::HTTP_OK, [
@@ -104,11 +106,13 @@ class CartPositionsResource extends AbstractController
 
             $this->entityManager->remove($entity);
             $this->entityManager->flush();
-        } catch (Exception $exception) {
+        } catch (InvalidArgumentException $exception) {
             return $this->json(
                 ['error' => $exception->getMessage()],
                 JsonResponse::HTTP_BAD_REQUEST
             );
+        } catch (Exception $exception) {
+            return $this->json(null, JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return $this->json(null, JsonResponse::HTTP_NO_CONTENT);
@@ -124,11 +128,13 @@ class CartPositionsResource extends AbstractController
 
         try {
             $this->updateEntityFromRequest($entity, $request);
-        } catch (Exception $exception) {
+        } catch (InvalidArgumentException $exception) {
             return $this->json(
                 ['error' => $exception->getMessage()],
                 JsonResponse::HTTP_BAD_REQUEST
             );
+        } catch (Exception $exception) {
+            return $this->json(null, JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return $this->json($entity, JsonResponse::HTTP_CREATED, [
@@ -166,11 +172,13 @@ class CartPositionsResource extends AbstractController
 
         try {
             $this->updateEntityFromRequest($entity, $request);
-        } catch (Exception $exception) {
+        } catch (InvalidArgumentException $exception) {
             return $this->json(
                 ['error' => $exception->getMessage()],
                 JsonResponse::HTTP_BAD_REQUEST
             );
+        } catch (Exception $exception) {
+            return $this->json(null, JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return $this->json($entity, $isNew ? JsonResponse::HTTP_CREATED : JsonResponse::HTTP_OK, [
@@ -194,10 +202,10 @@ class CartPositionsResource extends AbstractController
     protected function updateEntityFromRequest(CartPosition &$entity, Request $request): void
     {
         $idCart = $request->attributes->get('cart_id');
-        $content = json_decode($request->getContent());
+        $content = $request->getPayload();
 
         $data = new CartPositionDTO();
-        foreach ($content as $property => $value) {
+        foreach ($content->all() as $property => $value) {
             if (property_exists($data, $property)) {
                 $data->{$property} = $value;
             }

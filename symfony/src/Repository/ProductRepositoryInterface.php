@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Product;
+use App\Model\ProductDTO;
 use Doctrine\Persistence\ObjectRepository;
 
 /**
@@ -11,18 +12,18 @@ use Doctrine\Persistence\ObjectRepository;
 interface ProductRepositoryInterface extends ObjectRepository
 {
    /**
-    * @param string $name
+    * @param \App\Model\ProductDTO $data
     *
-    * @return array<\App\Entity\Product>
-    *   Returns an array of Product objects
+    * @return \App\Entity\Product
+    *   The entity filled from the provided data.
     */
-    public function findByName($name): array;
+    public function createFromData(ProductDTO $data): Product;
 
-   /**
-    * @param string $name
-    *
-    * @return \App\Entity\Product|null
-    *   A product with the given name.
-    */
-    public function findOneByName(string $name): ?Product;
+    /**
+     * @param \App\Entity\Product $entity
+     * @param \App\Model\ProductDTO $data
+     *
+     * @return void
+     */
+    public function updateWithData(Product &$entity, ProductDTO $data): void;
 }

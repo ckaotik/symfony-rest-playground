@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Product;
+use App\Model\ProductDTO;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -24,36 +26,40 @@ class ProductRepository extends ServiceEntityRepository implements ProductReposi
         parent::__construct($registry, Product::class);
     }
 
-   /**
-    * @param string $name
-    *
-    * @return Product[]
-    *   Returns an array of Product objects
+    /**
+    * @inheritdoc
     */
-    public function findByName($name): array
+    public function createFromData(ProductDTO $data): Product
     {
-        return $this->createQueryBuilder('p')
-           ->andWhere('p.name = :name')
-           ->setParameter('name', $name)
-           ->orderBy('p.id', 'ASC')
-           ->getQuery()
-           ->getResult()
-        ;
+        $entity = new Product();
+
+        $this->updateWithData($entity, $data);
+
+        return $entity;
     }
 
-   /**
-    * @param string $name
-    *
-    * @return Product|null
-    *   A product with the given name.
-    */
-    public function findOneByName(string $name): ?Product
+    /**
+     * @inheritDoc
+     */
+    public function updateWithData(Product &$entity, ProductDTO $data): void
     {
-        return $this->createQueryBuilder('p')
-           ->andWhere('p.name = :name')
-           ->setParameter('name', $name)
-           ->getQuery()
-           ->getOneOrNullResult()
-        ;
+        if (isset($data->name)) {
+            $entity->setName($data->name);
+        }
+        if (isset($data->description)) {
+            $entity->setDescription($data->description);
+        }
+        if (isset($data->imageUrl)) {
+            $entity->setImageUrl($data->imageUrl);
+        }
+        if (isset($data->price)) {
+            $entity->setPrice($data->price);
+        }
+        if (isset($data->status)) {
+            $entity->setStatus($data->status);
+        }
+        if (isset($data->created)) {
+            $entity->setCreated(new DateTime($data->created));
+        }
     }
 }

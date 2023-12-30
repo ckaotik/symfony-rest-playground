@@ -3,8 +3,9 @@
 namespace App\Controller\Api;
 
 use App\Entity\Cart;
+use App\Model\CartDTO;
+use App\Repository\CartRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\EntityRepository;
 use Exception;
 use InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,9 +20,9 @@ class CartsResource extends AbstractController
     protected EntityManagerInterface $entityManager;
 
     /**
-     * @var \Doctrine\ORM\EntityRepository<\App\Entity\Cart> $entityRepository
+     * @var \App\Repository\CartRepositoryInterface<\App\Entity\CartPosition> $entityRepository
      */
-    protected EntityRepository $entityRepository;
+    protected CartRepositoryInterface $entityRepository;
 
     protected const MAX_RESULTS = 50;
 
@@ -31,7 +32,10 @@ class CartsResource extends AbstractController
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
-        $this->entityRepository = $entityManager->getRepository(Cart::class);
+
+        /** @var \App\Repository\CartRepositoryInterface $entityRepository */
+        $entityRepository = $entityManager->getRepository(Cart::class);
+        $this->entityRepository = $entityRepository;
     }
 
     /**
@@ -54,17 +58,17 @@ class CartsResource extends AbstractController
     #[Route('/', name: 'carts.add', methods: ['POST'])]
     public function add(Request $request): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
-        $entity = new Cart($data);
+        $entity = new Cart();
 
         try {
-            $this->entityManager->persist($entity);
-            $this->entityManager->flush();
-        } catch (Exception $exception) {
+            $this->updateEntityFromRequest($entity, $request);
+        } catch (InvalidArgumentException $exception) {
             return $this->json(
                 ['error' => $exception->getMessage()],
                 JsonResponse::HTTP_BAD_REQUEST
             );
+        } catch (Exception $exception) {
+            return $this->json(null, JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return $this->json($entity, JsonResponse::HTTP_CREATED, [
@@ -103,13 +107,38 @@ class CartsResource extends AbstractController
 
             $this->entityManager->remove($entity);
             $this->entityManager->flush();
-        } catch (Exception $exception) {
+        } catch (InvalidArgumentException $exception) {
             return $this->json(
                 ['error' => $exception->getMessage()],
                 JsonResponse::HTTP_BAD_REQUEST
             );
+        } catch (Exception $exception) {
+            return $this->json(null, JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return $this->json(null, JsonResponse::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * @param \App\Entity\Cart $entity
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     *
+     * @return void
+     */
+    protected function updateEntityFromRequest(Cart &$entity, Request $request): void
+    {
+        $content = $request->getPayload();
+
+        $data = new CartDTO();
+        foreach ($content->all() as $property => $value) {
+            if (property_exists($data, $property)) {
+                $data->{$property} = $value;
+            }
+        }
+
+        $this->entityRepository->updateWithData($entity, $data);
+
+        $this->entityManager->persist($entity);
+        $this->entityManager->flush();
     }
 }

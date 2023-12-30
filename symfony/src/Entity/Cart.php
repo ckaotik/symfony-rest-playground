@@ -37,18 +37,9 @@ class Cart
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $updated = null;
 
-    /**
-     * Provide defaults during construction.
-     *
-     * @param array<string, mixed> $initialValues
-     */
-    public function __construct(array $initialValues = [])
+    public function __construct()
     {
         $this->positions = new ArrayCollection();
-
-        if (isset($initialValues['comment'])) {
-            $this->setComment((string)$initialValues['comment']);
-        }
 
         $this->setCreated($initialValues['created'] ?? new DateTime('now'));
     }

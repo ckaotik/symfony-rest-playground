@@ -40,27 +40,10 @@ class Product
 
     /**
      * Provide defaults during construction.
-     *
-     * @param array<string, mixed> $initialValues
      */
-    public function __construct(array $initialValues = [])
+    public function __construct()
     {
-        if (isset($initialValues['name'])) {
-            $this->setName((string)$initialValues['name']);
-        }
-        if (isset($initialValues['description'])) {
-            $this->setDescription((string)$initialValues['description']);
-        }
-        if (isset($initialValues['imageUrl'])) {
-            $this->setImageUrl((string)$initialValues['imageUrl']);
-        }
-        if (isset($initialValues['price'])) {
-            $this->setPrice(intval($initialValues['price']));
-        }
-        if (isset($initialValues['status'])) {
-            $this->setStatus((bool)$initialValues['status']);
-        }
-        $this->created = new DateTime($initialValues['created'] ?? 'now');
+        $this->created = new DateTime('now');
     }
 
     public function getId(): ?int
