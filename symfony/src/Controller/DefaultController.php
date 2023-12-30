@@ -2,10 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\Cart;
-use App\Repository\CartRepository;
 use App\Repository\ProductRepositoryInterface;
-use Doctrine\ORM\EntityRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,11 +21,7 @@ class DefaultController extends AbstractController {
     }
 
     #[Route('/', name: 'home')]
-    //#[Route('/{path}', requirements: ['path' => '(?!api/).+'])]
-    function index(Request $request): Response {
-        // \Kint::dump($request->attributes->all());
-        // \Kint::dump($request->getPathInfo());
-
+    public function index(Request $request): Response {
         return $this->render('page/home.html.twig', [
             'hostname' => $request->headers->get('host'),
             'products' => $this->productRepository->findAll(),
@@ -39,7 +32,7 @@ class DefaultController extends AbstractController {
      * Redirect unversioned API calls to current version.
      */
     #[Route('/api/{version}', requirements: ['version' => '(?!v\d+/).+'])]
-    function currentApi(Request $request, string $version): Response {
+    public function currentApi(Request $request, string $version): Response {
         return $this->redirect(
             '/api/' . static::CURRENT_API_VERSION . '/' . $version,
             Response::HTTP_MOVED_PERMANENTLY

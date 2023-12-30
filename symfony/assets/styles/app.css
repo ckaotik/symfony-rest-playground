@@ -2,7 +2,6 @@
 :root {
     --gutter-size: 0.75rem;
     --border-radius: 5px;
-    --breakpoint-large: 768px;
     --color-link: #0e5557;
     --color-accent: #44cfd1;
     --color-accent2: #fdca5b;
@@ -11,7 +10,7 @@
 /* Elements */
 body {
     background: var(--color-accent);
-    background: linear-gradient(280deg, var(--color-accent) 0%, var(--color-accent2) 100%);
+    background: linear-gradient(270deg, var(--color-accent) 0%, var(--color-accent2) 100%);
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -57,6 +56,7 @@ fieldset {
 .container {
     max-width: 1000px;
     margin: 0 auto;
+    display: block;
 }
 
 /* Grid-like display */
@@ -120,8 +120,6 @@ a.button:hover {
 .inline-list li:not(:last-child)::after {
     content: ' • ';
 }
-
-/* @media(min-width: var(--breakpoint-large)) {} */
 
 /* Components */
 .product.sold-out img {

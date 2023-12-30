@@ -36,8 +36,6 @@ class CartPositionsResource extends AbstractController {
 
     /**
      * Get all positions in the cart.
-     *
-     * @param \Symfony\Component\HttpFoundation\Request $request
      */
     #[Route('/', name: 'cart_positions.list', methods: ['GET'])]
     public function list(Request $request, int $cart_id): JsonResponse {
@@ -53,8 +51,6 @@ class CartPositionsResource extends AbstractController {
 
     /**
      * Remove all positions from cart.
-     *
-     * @param \Symfony\Component\HttpFoundation\Request $request
      */
     #[Route('/', name: 'cart_positions.clear', methods: ['DELETE'])]
     public function clear(int $cart_id): JsonResponse {
@@ -85,8 +81,6 @@ class CartPositionsResource extends AbstractController {
 
     /**
      * Add a position to the cart.
-     *
-     * @param \Symfony\Component\HttpFoundation\Request $request
      */
     #[Route('/', name: 'cart_positions.add', methods: ['POST'])]
     public function add(Request $request, int $cart_id): JsonResponse {

@@ -30,8 +30,6 @@ class CartsResource extends AbstractController {
 
     /**
      * Get a list of all carts.
-     *
-     * @param \Symfony\Component\HttpFoundation\Request $request
      */
     #[Route('/', name: 'carts.list', methods: ['GET'])]
     public function list(Request $request): JsonResponse {
@@ -45,8 +43,6 @@ class CartsResource extends AbstractController {
 
     /**
      * Create a new cart.
-     *
-     * @param \Symfony\Component\HttpFoundation\Request $request
      */
     #[Route('/', name: 'carts.add', methods: ['POST'])]
     public function add(Request $request): JsonResponse {

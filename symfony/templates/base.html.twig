@@ -12,7 +12,7 @@
     </head>
     <body>
         {% block header %}
-            <navigation>
+            <navigation class="container">
                 <ul class="inline-list">
                     <li style="display: inline-block;"><a href="{{ path('home') }}">Homepage</a></li>
                     <li style="display: inline-block;"><a href="{{ path('app_product_index') }}">Products</a></li>
@@ -20,6 +20,8 @@
                 </ul>
             </navigation>
         {% endblock %}
-        {% block body %}{% endblock %}
+        <div class="container">
+            {% block body %}{% endblock %}
+        </div>
     </body>
 </html>
