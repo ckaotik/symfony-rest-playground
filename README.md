@@ -6,11 +6,13 @@ A simple example project for a Symfony-based REST API.
 
 1. Create your `.env` file based on the provided `.env.example`.
 2. Start the containers using `docker compose up --build -d`
-3. The project can be reached under https://symfony.localhost
+3. Add `symfony.localhost` to your `etc/hosts` file.
+
+The project can be reached under https://symfony.localhost, and PHPmyAdmin is available under http://symfony.localhost:8080.
 
 ## FAQ
 
 <dl>
-<dt>How can I use console commands?</dt>
-<dd>You can connect to the PHP container using `docker exec -it symfony-rest-api-php-1 /bin/bash`</dd>
+<dt>Q: How can I use console commands?</dt>
+<dd>A: You can connect to the PHP container using `docker compose exec -it php /bin/bash`. When using Git for Windows, use `//bin/bash` (with an extra slash).</dd>
 </dl>

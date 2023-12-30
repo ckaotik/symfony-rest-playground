@@ -7,5 +7,5 @@
 !.env.example
 
 # IDE setting
-## PhpStorm
 .idea
+.vscode
