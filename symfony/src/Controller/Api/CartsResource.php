@@ -81,7 +81,9 @@ class CartsResource extends AbstractController
     #[Route('/{id}', name: 'carts.get', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function get(int $id): JsonResponse
     {
-        return $this->json($this->entityRepository->find($id));
+        $entity = $this->entityRepository->find($id);
+
+        return $this->json($entity, $entity ? JsonResponse::HTTP_OK : JsonResponse::HTTP_NOT_FOUND);
     }
 
     /**
