@@ -24,13 +24,13 @@ services:
                 GIT_USER_NAME: ${GIT_USER_NAME}
         ports:
             - "${PHP_PORT}:9001"
+        depends_on:
+            - db
         environment:
             DATABASE_URL: ${DATABASE_URL}
         volumes:
             - ./symfony:/var/www/symfony:cached
             - ./logs/symfony:/var/www/symfony/var/log:cached
-        depends_on:
-            - db
 
     phpmyadmin:
         image: phpmyadmin:5.2.0
@@ -43,7 +43,7 @@ services:
         restart: always
 
     nginx:
-        build: 
+        build:
             context: ./docker/nginx
             args:
                 NGINX_SERVER_NAME: ${NGINX_SERVER_NAME}

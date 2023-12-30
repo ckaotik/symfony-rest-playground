@@ -11,6 +11,15 @@ A simple example project for a Symfony-based REST API.
 
 The project can be reached under https://symfony.localhost, and PHPmyAdmin is available under http://symfony.localhost:8080.
 
+## Structure
+
+This repository contains
+- a docker environment
+- a simple REST API
+- some frontend for consuming the API
+
+A production setup should of course separate these, to allow for individual URLs, hosting and scaling. Especially, since the REST API requires a lot fewer dependencies.
+
 ## FAQ
 
 <dl>
