@@ -63,7 +63,7 @@ class ProductsResource extends AbstractController
         } catch (Exception $exception) {
             return $this->json(
                 ['error' => $exception->getMessage()],
-                JsonResponse::HTTP_INTERNAL_SERVER_ERROR
+                JsonResponse::HTTP_BAD_REQUEST
             );
         }
 
@@ -95,7 +95,7 @@ class ProductsResource extends AbstractController
         } catch (Exception $exception) {
             return $this->json(
                 ['error' => $exception->getMessage()],
-                JsonResponse::HTTP_INTERNAL_SERVER_ERROR
+                JsonResponse::HTTP_BAD_REQUEST
             );
         }
 
