@@ -59,6 +59,7 @@ Below is a table overview for the (possibly not yet) implemented API endpoints:
 | POST       | /api/v1/products/                      | CREATE product                 |
 | GET        | /api/v1/products/                      | READ list of products          |
 | GET        | /api/v1/products/{id}                  | READ product                   |
+| DELETE     | /api/v1/products/{id}                  | DELETE product                 |
 | POST       | /api/v1/carts/                         | CREATE cart                    |
 | GET        | /api/v1/carts/                         | READ list of carts             |
 | GET        | /api/v1/carts/{id}                     | READ cart                      |

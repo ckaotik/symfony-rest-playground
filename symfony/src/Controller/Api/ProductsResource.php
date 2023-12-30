@@ -5,6 +5,8 @@ namespace App\Controller\Api;
 use App\Entity\Product;
 use App\Repository\ProductRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
+use InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -58,8 +60,11 @@ class ProductsResource extends AbstractController
         try {
             $this->entityManager->persist($entity);
             $this->entityManager->flush();
-        } catch (\Exception $exception) {
-            return $this->json(['error' => $exception->getMessage()], JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
+        } catch (Exception $exception) {
+            return $this->json(
+                ['error' => $exception->getMessage()],
+                JsonResponse::HTTP_INTERNAL_SERVER_ERROR
+            );
         }
 
         return $this->json($entity, JsonResponse::HTTP_CREATED, [
@@ -69,6 +74,32 @@ class ProductsResource extends AbstractController
                 UrlGeneratorInterface::ABSOLUTE_URL
             ),
         ]);
+    }
+
+    /**
+     * Delete a product by id.
+     */
+    #[Route('/{id}', name: 'products.delete', methods: ['DELETE'])]
+    public function delete(int $id): JsonResponse
+    {
+        /** @var \App\Entity\Product|null $entity */
+        $entity = $this->entityManager->getRepository(Product::class)->find($id);
+
+        try {
+            if ($entity === null) {
+                throw new InvalidArgumentException('Invalid product id.');
+            }
+
+            $this->entityManager->remove($entity);
+            $this->entityManager->flush();
+        } catch (Exception $exception) {
+            return $this->json(
+                ['error' => $exception->getMessage()],
+                JsonResponse::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+
+        return $this->json(null, JsonResponse::HTTP_NO_CONTENT);
     }
 
     /**
