@@ -41,9 +41,11 @@ class CartPositionRepository extends ServiceEntityRepository implements CartPosi
      */
     public function updateWithData(CartPosition &$entity, CartPositionDTO $data): void
     {
-        $cart = $this->getEntityManager()->getRepository(Cart::class)
-            ->find($data->cart);
-        $entity->setCart($cart);
+        if (isset($data->cart)) {
+            $cart = $this->getEntityManager()->getRepository(Cart::class)
+                ->find($data->cart);
+            $entity->setCart($cart);
+        }
 
         $product = $this->getEntityManager()->getRepository(Product::class)
             ->find($data->product);
