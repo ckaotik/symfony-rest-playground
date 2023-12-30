@@ -70,7 +70,7 @@ class CartsResourceTest extends ApiTestBase
             'cart with comment' => [
                 ['comment' => '⭐ Sur&shy;prise! 😉'],
             ],
-            'cart with product' => [
+            'cart with products' => [
                 [
                     'positions' => [
                         ['product' => 1, 'quantity' => 3],

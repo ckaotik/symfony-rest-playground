@@ -4,7 +4,7 @@ namespace App\Controller\Api;
 
 use App\Entity\Cart;
 use App\Entity\CartPosition;
-use App\Model\CartPositionDTO;
+use App\Model\CartPositionDto;
 use App\Repository\CartPositionRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -203,7 +203,7 @@ class CartPositionsResource extends AbstractController
         $idCart = $request->attributes->get('cart_id');
         $content = $request->getPayload();
 
-        $data = new CartPositionDTO();
+        $data = new CartPositionDto();
         foreach ($content->all() as $property => $value) {
             if (property_exists($data, $property)) {
                 $data->{$property} = $value;

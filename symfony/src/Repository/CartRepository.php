@@ -4,8 +4,8 @@ namespace App\Repository;
 
 use App\Entity\Cart;
 use App\Entity\CartPosition;
-use App\Model\CartDTO;
-use App\Model\CartPositionDTO;
+use App\Model\CartDto;
+use App\Model\CartPositionDto;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -30,7 +30,7 @@ class CartRepository extends ServiceEntityRepository implements CartRepositoryIn
     /**
      * @inheritDoc
      */
-    public function createFromData(CartDTO $data): Cart
+    public function createFromData(CartDto $data): Cart
     {
         $entity = new Cart();
 
@@ -42,7 +42,7 @@ class CartRepository extends ServiceEntityRepository implements CartRepositoryIn
     /**
      * @inheritDoc
      */
-    public function updateWithData(Cart &$entity, CartDTO $data): void
+    public function updateWithData(Cart &$entity, CartDto $data): void
     {
         if (isset($data->comment)) {
             $entity->setComment($data->comment);
@@ -56,15 +56,7 @@ class CartRepository extends ServiceEntityRepository implements CartRepositoryIn
                 $entity->removePosition($position);
             }
             foreach ($data->positions as $positionData) {
-                $data = new CartPositionDTO();
-                foreach (get_object_vars($positionData) as $property => $value) {
-                    if (property_exists($data, $property)) {
-                        $data->{$property} = $value;
-                    }
-                }
-                $cartPosition = $cartPositionRepository->createFromData($data);
-
-                $entity->addPosition($cartPosition);
+                $entity->addPosition($cartPositionRepository->createFromData($positionData));
             }
         }
     }

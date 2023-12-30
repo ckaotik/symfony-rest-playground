@@ -2,7 +2,7 @@
 
 namespace App\Model;
 
-class ProductDTO
+class ProductDto
 {
     public ?string $name;
 

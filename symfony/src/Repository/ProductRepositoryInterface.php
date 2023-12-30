@@ -3,7 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Product;
-use App\Model\ProductDTO;
+use App\Model\ProductDto;
 use Doctrine\Persistence\ObjectRepository;
 
 /**
@@ -12,18 +12,18 @@ use Doctrine\Persistence\ObjectRepository;
 interface ProductRepositoryInterface extends ObjectRepository
 {
    /**
-    * @param \App\Model\ProductDTO $data
+    * @param \App\Model\ProductDto $data
     *
     * @return \App\Entity\Product
     *   The entity filled from the provided data.
     */
-    public function createFromData(ProductDTO $data): Product;
+    public function createFromData(ProductDto $data): Product;
 
     /**
      * @param \App\Entity\Product $entity
-     * @param \App\Model\ProductDTO $data
+     * @param \App\Model\ProductDto $data
      *
      * @return void
      */
-    public function updateWithData(Product &$entity, ProductDTO $data): void;
+    public function updateWithData(Product &$entity, ProductDto $data): void;
 }

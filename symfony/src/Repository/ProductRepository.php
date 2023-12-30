@@ -3,7 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Product;
-use App\Model\ProductDTO;
+use App\Model\ProductDto;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -29,7 +29,7 @@ class ProductRepository extends ServiceEntityRepository implements ProductReposi
     /**
     * @inheritdoc
     */
-    public function createFromData(ProductDTO $data): Product
+    public function createFromData(ProductDto $data): Product
     {
         $entity = new Product();
 
@@ -41,7 +41,7 @@ class ProductRepository extends ServiceEntityRepository implements ProductReposi
     /**
      * @inheritDoc
      */
-    public function updateWithData(Product &$entity, ProductDTO $data): void
+    public function updateWithData(Product &$entity, ProductDto $data): void
     {
         if (isset($data->name)) {
             $entity->setName($data->name);

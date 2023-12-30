@@ -3,7 +3,7 @@
 namespace App\Controller\Api;
 
 use App\Entity\Product;
-use App\Model\ProductDTO;
+use App\Model\ProductDto;
 use App\Repository\ProductRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -134,7 +134,7 @@ class ProductsResource extends AbstractController
     {
         $content = $request->getPayload();
 
-        $data = new ProductDTO();
+        $data = new ProductDto();
         foreach ($content->all() as $property => $value) {
             if (property_exists($data, $property)) {
                 $data->{$property} = $value;

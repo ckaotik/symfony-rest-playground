@@ -3,7 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\CartPosition;
-use App\Model\CartPositionDTO;
+use App\Model\CartPositionDto;
 use Doctrine\Persistence\ObjectRepository;
 
 /**
@@ -12,18 +12,18 @@ use Doctrine\Persistence\ObjectRepository;
 interface CartPositionRepositoryInterface extends ObjectRepository
 {
    /**
-    * @param \App\Model\CartPositionDTO $data
+    * @param \App\Model\CartPositionDto $data
     *
     * @return \App\Entity\CartPosition
     *   The entity filled from the provided data.
     */
-    public function createFromData(CartPositionDTO $data): CartPosition;
+    public function createFromData(CartPositionDto $data): CartPosition;
 
     /**
      * @param \App\Entity\CartPosition $entity
-     * @param \App\Model\CartPositionDTO $data
+     * @param \App\Model\CartPositionDto $data
      *
      * @return void
      */
-    public function updateWithData(CartPosition &$entity, CartPositionDTO $data): void;
+    public function updateWithData(CartPosition &$entity, CartPositionDto $data): void;
 }

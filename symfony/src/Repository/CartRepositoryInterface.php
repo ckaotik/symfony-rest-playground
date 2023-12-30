@@ -3,7 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Cart;
-use App\Model\CartDTO;
+use App\Model\CartDto;
 use Doctrine\Persistence\ObjectRepository;
 
 /**
@@ -12,18 +12,18 @@ use Doctrine\Persistence\ObjectRepository;
 interface CartRepositoryInterface extends ObjectRepository
 {
    /**
-    * @param \App\Model\CartDTO $data
+    * @param \App\Model\CartDto $data
     *
     * @return \App\Entity\Cart
     *   The entity filled from the provided data.
     */
-    public function createFromData(CartDTO $data): Cart;
+    public function createFromData(CartDto $data): Cart;
 
     /**
      * @param \App\Entity\Cart $entity
-     * @param \App\Model\CartDTO $data
+     * @param \App\Model\CartDto $data
      *
      * @return void
      */
-    public function updateWithData(Cart &$entity, CartDTO $data): void;
+    public function updateWithData(Cart &$entity, CartDto $data): void;
 }

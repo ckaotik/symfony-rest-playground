@@ -5,7 +5,7 @@ namespace App\Repository;
 use App\Entity\Cart;
 use App\Entity\CartPosition;
 use App\Entity\Product;
-use App\Model\CartPositionDTO;
+use App\Model\CartPositionDto;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -27,7 +27,7 @@ class CartPositionRepository extends ServiceEntityRepository implements CartPosi
     /**
      * @inheritDoc
      */
-    public function createFromData(CartPositionDTO $data): CartPosition
+    public function createFromData(CartPositionDto $data): CartPosition
     {
         $entity = new CartPosition();
 
@@ -39,7 +39,7 @@ class CartPositionRepository extends ServiceEntityRepository implements CartPosi
     /**
      * @inheritDoc
      */
-    public function updateWithData(CartPosition &$entity, CartPositionDTO $data): void
+    public function updateWithData(CartPosition &$entity, CartPositionDto $data): void
     {
         if (isset($data->cart)) {
             $cart = $this->getEntityManager()->getRepository(Cart::class)

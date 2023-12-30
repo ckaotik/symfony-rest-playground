@@ -2,7 +2,7 @@
 
 namespace App\Model;
 
-class CartPositionDTO
+class CartPositionDto
 {
     /**
      * The id of the cart to reference.

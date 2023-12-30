@@ -2,14 +2,14 @@
 
 namespace App\Model;
 
-class CartDTO
+class CartDto
 {
     public ?string $comment;
 
     /**
      * List of cart positions to create.
      *
-     * @var array<\App\Model\CartPositionDTO>|null
+     * @var array<\App\Model\CartPositionDto>|null
      */
     public ?array $positions;
 }
