@@ -7,12 +7,21 @@
         <img src="{{ product.imageUrl }}"/>
     </figure>
     <p>{{ product.description }}</p>
-    <p class="text-right">
-        {% if product.status -%}
-            {{ product.price|format_currency('EUR') }}
-        {% else %}
-            <span style="float: left; color: red;">{{ 'Sold out!'|trans|upper }}</span>
-            <s>{{ product.price|format_currency('EUR') }}</s>
-        {%- endif %}
-    </p>
+    <div class="grid grid--justify">
+        <div class="col">
+            {% if product.status -%}
+                <a href="#todo" class="button">{{ 'Add to cart'|trans }}</a>
+            {% else %}
+                <span class="button btn--danger text-right">{{ 'Sold out!'|trans|upper }}</span>
+            {%- endif %}
+        </div>
+
+        <div class="col">
+            {% if product.status -%}
+                {{ product.price|format_currency('EUR') }}
+            {% else %}
+                <s>{{ product.price|format_currency('EUR') }}</s>
+            {%- endif %}
+        </div>
+    </div>
 </article>

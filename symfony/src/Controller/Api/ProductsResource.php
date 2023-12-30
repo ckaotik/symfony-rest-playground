@@ -4,12 +4,12 @@ namespace App\Controller\Api;
 
 use App\Entity\Product;
 use App\Repository\ProductRepositoryInterface;
-use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 #[Route('/api/v1/products')]
 class ProductsResource extends AbstractController {
@@ -41,12 +41,22 @@ class ProductsResource extends AbstractController {
      */
     #[Route('/', name: 'products.add', methods: ['POST'])]
     public function add(Request $request): JsonResponse {
-        $product = new Product($request->request->all());
+        $entity = new Product($request->request->all());
 
-        $this->entityManager->persist($product);
-        $this->entityManager->flush();
+        try {
+            $this->entityManager->persist($entity);
+            $this->entityManager->flush();
+        } catch (\Exception $exception) {
+            return $this->json(['error' => $exception->getMessage()], JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
+        }
 
-        return $this->json($product);
+        return $this->json($entity, JsonResponse::HTTP_CREATED, [
+            'Location' => $this->generateUrl(
+                'products.get',
+                ['id' => $entity->getId()],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            ),
+        ]);
     }
 
     /**
