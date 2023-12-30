@@ -6,7 +6,7 @@ use App\Entity\Product;
 use Doctrine\Persistence\ObjectRepository;
 
 /**
- * @extends ObjectRepository<Product>
+ * @extends \Doctrine\Persistence\ObjectRepository<\App\Entity\Product>
  */
 interface ProductRepositoryInterface extends ObjectRepository
 {

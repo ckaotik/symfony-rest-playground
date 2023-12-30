@@ -23,7 +23,7 @@ class Cart
     /**
      * @var \Doctrine\Common\Collections\Collection<int, \App\Entity\CartPosition> $positions
      */
-    #[ORM\OneToMany(mappedBy: 'cart', targetEntity: CartPosition::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'cart', targetEntity: CartPosition::class, orphanRemoval: true, cascade: ['persist'])]
     private Collection $positions;
 
     #[ORM\Column(

@@ -49,8 +49,9 @@ class ProductsResourceTest extends ApiTestBase
         $this->assertSame(Response::HTTP_NO_CONTENT, $statusCode);
         $this->assertSame(null, $result);
 
-        [$statusCodeGet, $resultGet] = $this->handleJsonCall('/products/' . $resultGet->id, 'GET');
+        [$statusCodeGet, $result] = $this->handleJsonCall('/products/' . $resultGet->id, 'GET');
         $this->assertSame(Response::HTTP_NOT_FOUND, $statusCodeGet);
+        $this->assertSame(null, $result);
     }
 
     /**

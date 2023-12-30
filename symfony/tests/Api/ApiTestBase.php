@@ -27,7 +27,7 @@ abstract class ApiTestBase extends KernelTestCase
      * @param array<string,bool|int|string> $data
      *
      * @return array
-     *   The status code and content of the call.
+     *   The status code and content/error message of the call.
      */
     protected function handleJsonCall(string $endpoint, string $method = 'GET', array $data = []): array
     {
@@ -46,9 +46,11 @@ abstract class ApiTestBase extends KernelTestCase
             ? $this->httpKernelRequest($url, $method, $data)
             : $this->httpClientRequest($url, $method, $data);
 
+        $content = json_decode($response->getContent() ?: '');
+
         return [
             $response->getStatusCode(),
-            json_decode($response->getContent() ?: ''),
+            $response->isSuccessful() ? $content : (is_object($content) ? $content?->error : null),
         ];
     }
 
@@ -63,7 +65,7 @@ abstract class ApiTestBase extends KernelTestCase
         $httpClient = static::getContainer()->get('http_client');
 
         return $httpClient->request($method, $url, [
-            'body' => http_build_query($data),
+            'body' => json_encode($data),
         ]);
     }
 
