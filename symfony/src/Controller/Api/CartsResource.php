@@ -14,9 +14,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-
 #[Route('/api/v1/carts')]
-class CartsResource extends AbstractController {
+class CartsResource extends AbstractController
+{
     protected EntityManagerInterface $entityManager;
     protected ObjectRepository $entityRepository;
 
@@ -25,7 +25,8 @@ class CartsResource extends AbstractController {
     /**
      * @param \Doctrine\ORM\EntityManagerInterface $entityManager
      */
-    public function __construct(EntityManagerInterface $entityManager) {
+    public function __construct(EntityManagerInterface $entityManager)
+    {
         $this->entityManager = $entityManager;
         $this->entityRepository = $entityManager->getRepository(Cart::class);
     }
@@ -34,7 +35,8 @@ class CartsResource extends AbstractController {
      * Get a list of all carts.
      */
     #[Route('/', name: 'carts.list', methods: ['GET'])]
-    public function list(Request $request): JsonResponse {
+    public function list(Request $request): JsonResponse
+    {
         $limit = min($request->query->get('limit') ?? INF, static::MAX_RESULTS);
         $offset = $request->query->get('offset') ?? 0;
 
@@ -47,7 +49,8 @@ class CartsResource extends AbstractController {
      * Create a new cart.
      */
     #[Route('/', name: 'carts.add', methods: ['POST'])]
-    public function add(Request $request): JsonResponse {
+    public function add(Request $request): JsonResponse
+    {
         $entity = new Cart($request->request->all());
 
         try {
@@ -73,7 +76,8 @@ class CartsResource extends AbstractController {
      * Get a cart by id.
      */
     #[Route('/{id}', name: 'carts.get', methods: ['GET'], requirements: ['id' => '\d+'])]
-    public function get(int $id): JsonResponse {
+    public function get(int $id): JsonResponse
+    {
         return $this->json($this->entityRepository->find($id));
     }
 
@@ -81,7 +85,8 @@ class CartsResource extends AbstractController {
      * Delete a cart by id.
      */
     #[Route('/{id}', name: 'carts.delete', methods: ['DELETE'])]
-    public function delete(int $id): JsonResponse {
+    public function delete(int $id): JsonResponse
+    {
         /** @var \App\Entity\Cart $entity */
         $entity = $this->entityManager->getRepository(Cart::class)->find($id);
 

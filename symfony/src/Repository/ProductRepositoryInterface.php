@@ -13,7 +13,7 @@ interface ProductRepositoryInterface extends ObjectRepository
     * @return array<\App\Entity\Product>
     *   Returns an array of Product objects
     */
-   public function findByName($name): array;
+    public function findByName($name): array;
 
    /**
     * @param string $name
@@ -21,5 +21,5 @@ interface ProductRepositoryInterface extends ObjectRepository
     * @return \App\Entity\Product|null
     *   A product with the given name.
     */
-   public function findOneByName(string $name): ?Product;
+    public function findOneByName(string $name): ?Product;
 }

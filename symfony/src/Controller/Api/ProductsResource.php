@@ -12,7 +12,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 #[Route('/api/v1/products')]
-class ProductsResource extends AbstractController {
+class ProductsResource extends AbstractController
+{
     protected EntityManagerInterface $entityManager;
     protected ProductRepositoryInterface $entityRepository;
 
@@ -21,7 +22,8 @@ class ProductsResource extends AbstractController {
     /**
      * @param \Doctrine\ORM\EntityManagerInterface $entityManager
      */
-    public function __construct(EntityManagerInterface $entityManager) {
+    public function __construct(EntityManagerInterface $entityManager)
+    {
         $this->entityManager = $entityManager;
         $this->entityRepository = $entityManager->getRepository(Product::class);
     }
@@ -30,7 +32,8 @@ class ProductsResource extends AbstractController {
      * Get a list of all products.
      */
     #[Route('/', name: 'products.list', methods: ['GET'])]
-    public function list(Request $request): JsonResponse {
+    public function list(Request $request): JsonResponse
+    {
         $limit = min($request->query->get('limit') ?? INF, static::MAX_RESULTS);
         $offset = $request->query->get('offset') ?? 0;
 
@@ -43,7 +46,8 @@ class ProductsResource extends AbstractController {
      * Create a new product.
      */
     #[Route('/', name: 'products.add', methods: ['POST'])]
-    public function add(Request $request): JsonResponse {
+    public function add(Request $request): JsonResponse
+    {
         $entity = new Product($request->request->all());
 
         try {
@@ -66,7 +70,8 @@ class ProductsResource extends AbstractController {
      * Get a product by id.
      */
     #[Route('/{id}', name: 'products.get', methods: ['GET'], requirements: ['id' => '\d+'])]
-    public function get(int $id): JsonResponse {
+    public function get(int $id): JsonResponse
+    {
         return $this->json($this->entityRepository->find($id));
     }
 }

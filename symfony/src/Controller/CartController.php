@@ -10,7 +10,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
-class CartController extends AbstractController {
+class CartController extends AbstractController
+{
     /**
      * Create a new cart.
      */
@@ -153,7 +154,8 @@ class CartController extends AbstractController {
      */
     #[Route('/cart', name: 'app_cart_index')]
     #[Route('/cart/{id}', name: 'app_cart_show', requirements: ['cart' => '\d+'])]
-    public function show(CartRepository $entityRepository, Cart $cart = null): Response {
+    public function show(CartRepository $entityRepository, Cart $cart = null): Response
+    {
         if ($cart === null) {
             // Show the most recent cart.
             $cart = $entityRepository->findOneBy([], ['updated' => 'DESC']);
@@ -171,8 +173,12 @@ class CartController extends AbstractController {
     /**
      * @todo Figure out why local Docker setup refuses to connect to our own URLs via http_client.
      */
-    protected function handleApiRequest(string $endpoint, string $method = 'GET', array $request = [], array $query = []): mixed
-    {
+    protected function handleApiRequest(
+        string $endpoint,
+        string $method = 'GET',
+        array $request = [],
+        array $query = []
+    ): mixed {
         $url = '/api/v1' . $endpoint;
         if ($query) {
             $url .= '?' . http_build_query($query);

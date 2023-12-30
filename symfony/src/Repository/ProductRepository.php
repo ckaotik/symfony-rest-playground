@@ -30,16 +30,16 @@ class ProductRepository extends ServiceEntityRepository implements ProductReposi
     * @return Product[]
     *   Returns an array of Product objects
     */
-   public function findByName($name): array
-   {
-       return $this->createQueryBuilder('p')
+    public function findByName($name): array
+    {
+        return $this->createQueryBuilder('p')
            ->andWhere('p.name = :name')
            ->setParameter('name', $name)
            ->orderBy('p.id', 'ASC')
            ->getQuery()
            ->getResult()
-       ;
-   }
+        ;
+    }
 
    /**
     * @param string $name
@@ -47,13 +47,13 @@ class ProductRepository extends ServiceEntityRepository implements ProductReposi
     * @return Product|null
     *   A product with the given name.
     */
-   public function findOneByName(string $name): ?Product
-   {
-       return $this->createQueryBuilder('p')
+    public function findOneByName(string $name): ?Product
+    {
+        return $this->createQueryBuilder('p')
            ->andWhere('p.name = :name')
            ->setParameter('name', $name)
            ->getQuery()
            ->getOneOrNullResult()
-       ;
-   }
+        ;
+    }
 }
