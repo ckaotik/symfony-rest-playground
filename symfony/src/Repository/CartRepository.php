@@ -57,7 +57,7 @@ class CartRepository extends ServiceEntityRepository implements CartRepositoryIn
             }
             foreach ($data->positions as $positionData) {
                 $data = new CartPositionDTO();
-                foreach ($positionData as $property => $value) {
+                foreach (get_object_vars($positionData) as $property => $value) {
                     if (property_exists($data, $property)) {
                         $data->{$property} = $value;
                     }

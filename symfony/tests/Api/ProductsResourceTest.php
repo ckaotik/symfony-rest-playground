@@ -30,16 +30,18 @@ class ProductsResourceTest extends ApiTestBase
     }
 
     /**
-     * @note Update operation is not yet implemented.
+     * @dataProvider provideProducts
      *
-     * @dataProvider provideProductData
+     * @param array<string,mixed> $entityData
+     *
+     * @note Update operation is not yet implemented.
      */
-    public function testCrud(array $productData)
+    public function testCrud(array $entityData): void
     {
-        [$statusCode, $result] = $this->apiClient->handleJsonCall('/products/', 'POST', $productData);
+        [$statusCode, $result] = $this->apiClient->handleJsonCall('/products/', 'POST', $entityData);
         $resultData = (array)$result;
         $this->assertSame(Response::HTTP_CREATED, $statusCode);
-        $this->assertEquals($resultData, $productData + $resultData);
+        $this->assertEquals($resultData, $entityData + $resultData);
 
         [$statusCodeGet, $resultGet] = $this->apiClient->handleJsonCall('/products/' . $result->id, 'GET');
         $this->assertSame(Response::HTTP_OK, $statusCodeGet);
@@ -56,8 +58,10 @@ class ProductsResourceTest extends ApiTestBase
 
     /**
      * Provides data for ::testCrud.
+     *
+     * @return array<array<array<string,mixed>>>
      */
-    public function provideProductData(): array
+    public function provideProducts(): array
     {
         return [
             'enabled product' => [
@@ -78,7 +82,9 @@ class ProductsResourceTest extends ApiTestBase
             'full product' => [
                 [
                     'name' => 'Product A',
-                    'description' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolorum ut error necessitatibus soluta itaque laborum? Commodi est enim quaerat, excepturi odit rerum ab nesciunt debitis quidem eius, temporibus perspiciatis aperiam?',
+                    'description' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. '
+                        . 'Dolorum ut error necessitatibus soluta itaque laborum? Commodi est enim quaerat, '
+                        . 'excepturi odit rerum ab nesciunt debitis quidem eius, temporibus perspiciatis aperiam?',
                     'imageUrl' => 'https://picsum.photos/id/300/200.jpg',
                     'price' => 42,
                     'status' => true,

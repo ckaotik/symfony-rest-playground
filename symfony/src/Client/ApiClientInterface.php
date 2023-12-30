@@ -2,15 +2,16 @@
 
 namespace App\Client;
 
-interface ApiClientInterface {
+interface ApiClientInterface
+{
     /**
      * Handles an API request using the configured service.
      *
      * @param string $endpoint
      * @param string $method
-     * @param array<string,bool|int|string> $data
+     * @param array<string,mixed> $data
      *
-     * @return array
+     * @return array<mixed>
      *   The status code and content/error message of the call.
      */
     public function handleJsonCall(string $endpoint, string $method = 'GET', array $data = []): array;

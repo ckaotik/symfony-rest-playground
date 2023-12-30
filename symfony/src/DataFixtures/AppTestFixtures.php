@@ -29,7 +29,10 @@ class AppTestFixtures extends Fixture
         $productBike = new Product();
         $productBike
             ->setName('Balance bike')
-            ->setDescription('Get the little ones going! The unique balance bike of the brand Eigenbau is only available in our store.')
+            ->setDescription(
+                'Get the little ones going! The unique balance bike of the brand Eigenbau '
+                . 'is only available in our store.'
+            )
             ->setImageUrl('https://picsum.photos/id/146/300/200.jpg')
             ->setPrice(29900)
             ->setCreated(new DateTime('2022-01-01 12:00:00'))
@@ -39,7 +42,11 @@ class AppTestFixtures extends Fixture
         $productCableCar = new Product();
         $productCableCar
             ->setName('Cable car')
-            ->setDescription('Your very own cable car. Not everyone can say that about themselves! Impress your neighbors and show everyone what you can afford. No mountain at hand? Use our XXS model to get to the second floor. Never climb stairs again!')
+            ->setDescription(
+                'Your very own cable car. Not everyone can say that about themselves! '
+                . 'Impress your neighbors and show everyone what you can afford. No mountain at hand? '
+                . 'Use our XXS model to get to the second floor. Never climb stairs again!'
+            )
             ->setImageUrl('https://picsum.photos/id/328/300/200.jpg')
             ->setPrice(999999999)
             ->setCreated(new DateTime('2023-12-31 00:00:00'))
@@ -52,10 +59,10 @@ class AppTestFixtures extends Fixture
         $cart = new Cart();
         $cart
             ->setComment('Cart for testing')
-            ->addPosition((new CartPosition)
+            ->addPosition((new CartPosition())
                 ->setProduct($productBike)
                 ->setQuantity(2))
-            ->addPosition((new CartPosition)
+            ->addPosition((new CartPosition())
                 ->setProduct($productCableCar)
                 ->setQuantity(1));
         $manager->persist($cart);

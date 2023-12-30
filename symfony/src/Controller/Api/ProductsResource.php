@@ -20,7 +20,7 @@ class ProductsResource extends AbstractController
     protected EntityManagerInterface $entityManager;
 
     /**
-     * @var \App\Repository\ProductRepositoryInterface<\App\Entity\Product> $entityRepository
+     * @var \App\Repository\ProductRepositoryInterface $entityRepository
      */
     protected ProductRepositoryInterface $entityRepository;
 

@@ -41,7 +41,7 @@ class Cart
     {
         $this->positions = new ArrayCollection();
 
-        $this->setCreated($initialValues['created'] ?? new DateTime('now'));
+        $this->setCreated(new DateTime('now'));
     }
 
     public function getId(): ?int

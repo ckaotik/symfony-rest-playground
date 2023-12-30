@@ -20,7 +20,7 @@ class CartsResource extends AbstractController
     protected EntityManagerInterface $entityManager;
 
     /**
-     * @var \App\Repository\CartRepositoryInterface<\App\Entity\CartPosition> $entityRepository
+     * @var \App\Repository\CartRepositoryInterface $entityRepository
      */
     protected CartRepositoryInterface $entityRepository;
 

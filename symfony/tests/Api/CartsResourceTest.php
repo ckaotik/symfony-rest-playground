@@ -27,11 +27,13 @@ class CartsResourceTest extends ApiTestBase
     }
 
     /**
-     * @note Update operation is not yet implemented.
+     * @dataProvider provideCarts
      *
-     * @dataProvider provideProductData
+     * @param array<string,mixed> $entityData
+     *
+     * @note Update operation is not yet implemented.
      */
-    public function testCrud(array $entityData)
+    public function testCrud(array $entityData): void
     {
         [$statusCode, $result] = $this->apiClient->handleJsonCall('/carts/', 'POST', $entityData);
         $this->assertSame(Response::HTTP_CREATED, $statusCode);
@@ -56,8 +58,10 @@ class CartsResourceTest extends ApiTestBase
 
     /**
      * Provides data for ::testCrud.
+     *
+     * @return array<array<array<string,mixed>>>
      */
-    public function provideProductData(): array
+    public function provideCarts(): array
     {
         return [
             'empty cart' => [

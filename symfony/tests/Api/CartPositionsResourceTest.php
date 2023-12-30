@@ -14,7 +14,7 @@ class CartPositionsResourceTest extends ApiTestBase
     {
         parent::setUp();
 
-        [, $results] = $this->apiClient->handleJsonCall('/products/', 'GET' , [
+        [, $results] = $this->apiClient->handleJsonCall('/products/', 'GET', [
             'name' => 'Boat',
             'limit' => 1,
         ]);
@@ -53,14 +53,14 @@ class CartPositionsResourceTest extends ApiTestBase
         $this->assertNotEmpty($results);
         $this->assertEquals($result, end($results));
 
-        [$statusCode, $result] = $this->apiClient->handleJsonCall('/carts/' . $this->idCart . '/positions/' . $result->id, 'DELETE');
+        [$statusCode, $result] = $this->apiClient->handleJsonCall(
+            '/carts/' . $this->idCart . '/positions/' . $result->id,
+            'DELETE'
+        );
         $this->assertSame(Response::HTTP_NO_CONTENT, $statusCode);
     }
 
-    /**
-     * @_dataProvider provideCartPositions
-     */
-    public function testCrud(/* array $entityData */)
+    public function testCrud(): void
     {
         $entityData = ['product' => $this->idProduct, 'quantity' => 3];
         $endpoint = '/carts/' . $this->idCart . '/positions/';
@@ -88,18 +88,6 @@ class CartPositionsResourceTest extends ApiTestBase
 
         [$statusCode, $resultGet] = $this->apiClient->handleJsonCall($endpoint . $resultGet->id, 'GET');
         $this->assertSame(Response::HTTP_NOT_FOUND, $statusCode);
-    }
-
-    /**
-     * Provides data for ::testAdd.
-     */
-    public function provideCartPositions(): array
-    {
-        return [
-            '' => [
-                ['product' => $this->idProduct, 'quantity' => 3],
-            ],
-        ];
     }
 
     public function testClear(): void

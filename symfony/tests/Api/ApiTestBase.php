@@ -15,6 +15,8 @@ abstract class ApiTestBase extends KernelTestCase
 
     protected function setUp(): void
     {
-        $this->apiClient = static::getContainer()->get(SymfonyApiClient::class);
+        /** @var \App\Client\ApiClientInterface $apiClient */
+        $apiClient = static::getContainer()->get(SymfonyApiClient::class);
+        $this->apiClient = $apiClient;
     }
 }

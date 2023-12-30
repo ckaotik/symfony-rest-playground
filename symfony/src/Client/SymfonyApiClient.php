@@ -55,11 +55,14 @@ class SymfonyApiClient implements ApiClientInterface
             ? $this->httpKernelRequest($url, $method, $data)
             : $this->httpClientRequest($url, $method, $data);
 
+            $statusCode = $response->getStatusCode();
         $content = json_decode($response->getContent() ?: '');
 
         return [
-            $response->getStatusCode(),
-            $response->isSuccessful() ? $content : (is_object($content) ? $content?->error : null),
+            $statusCode,
+            $statusCode >= 200 && $statusCode < 300
+                ? $content
+                : (is_object($content) && property_exists($content, 'error') ? $content->error : null),
         ];
     }
 
@@ -82,7 +85,8 @@ class SymfonyApiClient implements ApiClientInterface
      */
     protected function httpKernelRequest(string $url, string $method = 'GET', ?array $data = null): Response
     {
-        $subRequest = Request::create($url, $method, [], [], [], [], json_encode($data));
+        $body = (string)json_encode($data);
+        $subRequest = Request::create($url, $method, [], [], [], [], $body);
 
         return $this->httpKernel->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
     }
