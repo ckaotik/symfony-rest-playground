@@ -3,12 +3,20 @@
 {% block title %}{{ 'Cart'|trans }}{% endblock %}
 
 {% block body %}
-    <h1>{{ 'Cart'|trans }}</h1>
+    <h1>{{ 'Cart #@id'|trans({ '@id': cart.id }) }}</h1>
 
-    <div class="container">
+    <section class="admin container">
+        <h2>{{ 'Administration'|trans }}</h2>
+        <div>
+            {# <h3>{{ 'Actions'|trans }}:</h3> #}
+            <a href="{{ path('app_cart_add') }}" class="button">{{ 'Add new cart'|trans }}</a>
+            <a href="{{ path('app_cart_clear', { id: cart.id }) }}" class="button">{{ 'Clear cart'|trans }}</a>
+            <a href="{{ path('app_cart_delete', { id: cart.id }) }}" class="button">{{ 'Delete cart'|trans }}</a>
+        </div>
         {% if carts %}
+            <hr>
             <ul class="inline-list">
-                <strong>{{ 'All carts'|trans }}:</strong>
+                <h3>{{ 'Switch cart'|trans }}:</h3>
                 {% for existingCart in carts %}
                     <li>
                         <a href="{{ path('app_cart_show', { id: existingCart.id }) }}">
@@ -19,13 +27,7 @@
                 {% endfor %}
             </ul>
         {% endif %}
-
-        <p>
-            <a href="{{ path('app_cart_add') }}" class="button">{{ 'Add new cart'|trans }}</a>
-            <a href="{{ path('app_cart_clear', { id: cart.id }) }}" class="button">{{ 'Clear cart'|trans }}</a>
-            <a href="{{ path('app_cart_delete', { id: cart.id }) }}" class="button">{{ 'Delete cart'|trans }}</a>
-        </p>
-    </div>
+    </section>
 
     {% if cart.comment %}
         <p><span class="label">{{ 'Comment'|trans }}:</span> {{ cart.comment }}</p>

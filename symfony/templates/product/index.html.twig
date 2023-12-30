@@ -5,6 +5,13 @@
 {% block body %}
     <h1>{{ 'Products'|trans }}</h1>
 
+    <section class="admin container">
+        <h2>{{ 'Administration'|trans }}</h2>
+        {% block add %}
+            <a href="{{ path('app_product_new') }}" class="button">➕ {{ 'Create new'|trans }}</a>
+        {% endblock %}
+    </section>
+
     {% block products %}
         <section class="grid">
             {% for product in products %}
@@ -19,9 +26,5 @@
                 </p>
             {% endfor %}
         </section>
-    {% endblock %}
-
-    {% block add %}
-        <a href="{{ path('app_product_new') }}" class="button">➕ {{ 'Create new'|trans }}</a>
     {% endblock %}
 {% endblock %}

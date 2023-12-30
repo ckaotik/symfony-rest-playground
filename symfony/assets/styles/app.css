@@ -10,7 +10,7 @@
 /* Elements */
 body {
     background: var(--color-accent);
-    background: linear-gradient(270deg, var(--color-accent) 0%, var(--color-accent2) 100%);
+    background: linear-gradient(90deg, var(--color-accent2), var(--color-accent));
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -52,11 +52,39 @@ fieldset {
     display: inline-block;
 }
 
+hr {
+    background: linear-gradient(90deg, transparent 30%, var(--color-link) 50%, transparent 70%);
+    height: 1px;
+    border: none;
+}
+
 /* Utils */
 .container {
     max-width: 1000px;
     margin: 0 auto;
     display: block;
+}
+
+.admin {
+    border-left: 2px solid var(--color-link);
+    padding: 0.5rem var(--gutter-size);
+    border-radius: 5px;
+    box-shadow: var(--color-link) 0px 0px var(--gutter-size) -5px;
+}
+.admin{
+    h2, h3 {
+        font-size: inherit;
+    }
+    h2 {
+        font-variant: small-caps;
+        margin-top: 0;
+    }
+    h3 {
+        display: inline-block;
+        font-family: inherit;
+        font-weight: unset;
+        margin: 0;
+    }
 }
 
 /* Grid-like display */
@@ -77,8 +105,12 @@ fieldset {
 .col--4 { width: calc(100% / 12 * 4 - 2 * var(--gutter-size)); }
 .col--6 { width: calc(100% / 12 * 6 - 2 * var(--gutter-size)); }
 .col--12 { width: 100%; }
+.col--expand {
+    flex-grow: 1;
+}
 
 .button {
+    display: inline-block;
     padding: 0.25em 0.5em;
     border-radius: var(--border-radius);
     background-color: rgba(255, 255, 255, 0.3);
@@ -122,6 +154,10 @@ a.button:hover {
 }
 
 /* Components */
+.product {
+    display: flex;
+    flex-direction: column;
+}
 .product.sold-out img {
     filter: grayscale() opacity(0.5);
 }
