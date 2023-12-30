@@ -38,20 +38,4 @@ class DefaultController extends AbstractController {
             Response::HTTP_MOVED_PERMANENTLY
         );
     }
-
-    /**
-     * Display a cart.
-     */
-    #[Route('/cart', name: 'app_cart_index', methods: ['GET'])]
-    #[Route('/cart/{id}', name: 'app_cart_show', requirements: ['cart' => '\d+'])]
-    function cart(CartRepository $entityRepository, Cart $cart = null): Response {
-        if ($cart === null) {
-            // Show the most recent cart.
-            $cart = $entityRepository->findOneBy([], ['updated' => 'DESC']);
-        }
-
-        return $this->render('page/cart.html.twig', [
-            'cart' => $cart,
-        ]);
-    }
 }

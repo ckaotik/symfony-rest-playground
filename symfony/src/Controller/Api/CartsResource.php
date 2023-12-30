@@ -6,6 +6,8 @@ use App\Entity\Cart;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectRepository;
 use Exception;
+use InvalidArgumentException;
+use stdClass;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -73,5 +75,30 @@ class CartsResource extends AbstractController {
     #[Route('/{id}', name: 'carts.get', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function get(int $id): JsonResponse {
         return $this->json($this->entityRepository->find($id));
+    }
+
+    /**
+     * Delete a cart by id.
+     */
+    #[Route('/{id}', name: 'carts.delete', methods: ['DELETE'])]
+    public function delete(int $id): JsonResponse {
+        /** @var \App\Entity\Cart $entity */
+        $entity = $this->entityManager->getRepository(Cart::class)->find($id);
+
+        try {
+            if (!$entity) {
+                throw new InvalidArgumentException('Invalid cart id.');
+            }
+
+            $this->entityManager->remove($entity);
+            $this->entityManager->flush();
+        } catch (Exception $exception) {
+            return $this->json(
+                ['error' => $exception->getMessage()],
+                JsonResponse::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+
+        return $this->json(null, JsonResponse::HTTP_NO_CONTENT);
     }
 }

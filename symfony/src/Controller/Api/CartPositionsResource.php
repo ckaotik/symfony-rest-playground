@@ -52,8 +52,8 @@ class CartPositionsResource extends AbstractController {
     /**
      * Remove all positions from cart.
      */
-    #[Route('/', name: 'cart_positions.clear', methods: ['DELETE'])]
-    public function clear(int $cart_id): JsonResponse {
+    #[Route('/', name: 'cart_positions.delete', methods: ['DELETE'])]
+    public function delete(int $cart_id): JsonResponse {
         /** @var \App\Entity\Cart $entity */
         $entity = $this->entityManager->getRepository(Cart::class)->find($cart_id);
         foreach ($entity->getPositions() as $cartPosition) {
