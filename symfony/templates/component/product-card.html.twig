@@ -1,0 +1,16 @@
+<article style="display: inline-block; padding: 0 1rem; width: 300px;">
+    <h3>
+        <a href="{{ path('app_product_show', { id: product.id }) }}">{{ product.name }}</a>
+        <a href="{{ path('app_product_edit', { id: product.id }) }}" style="float: right;">🖊️</a>
+    </h3>
+    <img src="{{ product.imageUrl }}"/>
+    <p>{{ product.description }}</p>
+    <p style="text-align: right;">
+        {% if product.status -%}
+            {{ product.price|format_currency('EUR') }}
+        {% else %}
+            <span style="float: left; color: red;">{{ 'Sold out!'|trans|upper }}</span>
+            <s>{{ product.price|format_currency('EUR') }}</s>
+        {%- endif %}
+    </p>
+</article>

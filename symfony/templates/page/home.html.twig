@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <p>This is a test project. It does in no way aspire to be great, but it <em>should</em> be quite usable to get an impression of what's easily done with Symfony regarding REST services.</p>
+    <ul>
+        <li><a href="{{ hostname }}:8080" target="_blank">phpMyAdmin</a></li>
+        <li><a href="/api">REST API</a>, e.g. for <a href="{{ path('products.list') }}">products</a></li>
+    </ul>
+
+    <hr>
+
+    {% block products %}
+        <h2>{{ 'Please enjoy our awesome products:'|trans }}</h2>
+        <section style="display: flex; flex-wrap: wrap; margin: 0 -1rem;">
+            {% for product in products %}
+                {% include 'component/product-card.html.twig' with {
+                    product: product,
+                } only %}
+            {% else %}
+                <p style="padding: 0 1rem;">
+                    {{ 'There are no products yet, want to <a href="@create_url">create one</a>?'|trans({
+                        '@create_url': path('app_product_new'),
+                    })|raw }}
+                </p>
+            {% endfor %}
+        </section>
+    {% endblock %}
+{% endblock %}

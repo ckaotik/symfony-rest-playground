@@ -11,6 +11,14 @@
         {% endblock %}
     </head>
     <body>
+        {% block header %}
+            <navigation>
+                <ul style="list-style: none; margin: unset; padding: unset;">
+                    <li style="display: inline-block;"><a href="{{ path('home') }}">Homepage</a></li>
+                    <li style="display: inline-block;"><a href="{{ path('app_product_index') }}">Administer products</a></li>
+                </ul>
+            </navigation>
+        {% endblock %}
         {% block body %}{% endblock %}
     </body>
 </html>

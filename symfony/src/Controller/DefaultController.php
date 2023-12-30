@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\ProductRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -10,12 +11,24 @@ use Symfony\Component\Routing\Annotation\Route;
 class DefaultController extends AbstractController {
     protected const CURRENT_API_VERSION = 'v1';
 
+    protected ProductRepositoryInterface $productRepository;
+
+    /**
+     * @param \App\Repository\ProductRepositoryInterface $productRepository
+     */
+    public function __construct(ProductRepositoryInterface $productRepository) {
+        $this->productRepository = $productRepository;
+    }
+
     #[Route('/', name: 'home')]
-    #[Route('/{path}', requirements: ['path' => '(?!api/).+'])]
+    //#[Route('/{path}', requirements: ['path' => '(?!api/).+'])]
     function index(Request $request): Response {
-        return $this->render('page/default.html.twig', [
+        // \Kint::dump($request->attributes->all());
+        // \Kint::dump($request->getPathInfo());
+
+        return $this->render('page/home.html.twig', [
             'hostname' => $request->headers->get('host'),
-            'path' => $request->attributes->get('path'),
+            'products' => $this->productRepository->findAll(),
         ]);
     }
 
