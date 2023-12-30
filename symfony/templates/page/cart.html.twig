@@ -12,8 +12,8 @@
                 {% for existingCart in carts %}
                     <li>
                         <a href="{{ path('app_cart_show', { id: existingCart.id }) }}">
-                            <span class="button">{{ existingCart.positions|length }}</span>
                             {{ existingCart.comment|default('#' ~ existingCart.id) }}
+                            <span class="button">{{ existingCart.positions|length }}</span>
                         </a>
                     </li>
                 {% endfor %}

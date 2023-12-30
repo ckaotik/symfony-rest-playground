@@ -12,9 +12,13 @@
     <div class="grid grid--justify">
         <div class="col">
             {% block actions %}
-                {% if product.status -%}
-                    <a href="#todo" class="button">{{ 'Add to cart'|trans }}</a>
-                {% else %}
+                {% if product.status and cartId -%}
+                    <a href="{{ path('app_cart_position_add', {
+                        cart_id: cartId,
+                        product_id: product.id,
+                        quantity: 1,
+                    }) }}" class="button">{{ 'Add to cart'|trans }}</a>
+                {% elseif not product.status %}
                     <span class="button btn--danger text-right">{{ 'Sold out!'|trans|upper }}</span>
                 {%- endif %}
             {% endblock %}
