@@ -6,27 +6,31 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ProductsResourceTest extends ApiTestBase
 {
-    public function testList(): void
+    public function testRedirect(): void
     {
         // Symfony redirects on missing trailing slash.
         [$statusCode, $result] = $this->handleJsonCall('/products');
         $this->assertSame(301, $statusCode);
+    }
 
-        [$statusCode, $result] = $this->handleJsonCall('/products/');
+    public function testList(): void
+    {
+        [$statusCode, $results] = $this->handleJsonCall('/products/');
         $this->assertSame(Response::HTTP_OK, $statusCode);
-        $this->assertEmpty($result);
+        $this->assertEmpty($results);
 
         [$statusCode, $result] = $this->handleJsonCall('/products/', 'POST', ['name' => 'Product A']);
         $this->assertSame(Response::HTTP_CREATED, $statusCode);
         $this->assertEquals('Product A', $result->name);
 
-        [$statusCode, $result] = $this->handleJsonCall('/products/');
+        [$statusCode, $results] = $this->handleJsonCall('/products/');
         $this->assertSame(Response::HTTP_OK, $statusCode);
-        $this->assertNotEmpty($result);
+        $this->assertNotEmpty($results);
+        $this->assertEquals($result, $results[0]);
     }
 
     /**
-     * @note Update operation is not implemented.
+     * @note Update operation is not yet implemented.
      *
      * @dataProvider provideProductData
      */
@@ -44,6 +48,9 @@ class ProductsResourceTest extends ApiTestBase
         [$statusCode, $result] = $this->handleJsonCall('/products/' . $result->id, 'DELETE');
         $this->assertSame(Response::HTTP_NO_CONTENT, $statusCode);
         $this->assertSame(null, $result);
+
+        [$statusCodeGet, $resultGet] = $this->handleJsonCall('/products/' . $resultGet->id, 'GET');
+        $this->assertSame(Response::HTTP_NOT_FOUND, $statusCodeGet);
     }
 
     /**

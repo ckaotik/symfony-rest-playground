@@ -10,7 +10,7 @@ use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 class DefaultControllerTest extends KernelTestCase
 {
     /**
-     * @dataProvider provideCurrentApiData
+     * @dataProvider provideCurrentApiPaths
      */
     public function testCurrentApi(?string $expectedResult, string $requestUri): void
     {
@@ -24,11 +24,8 @@ class DefaultControllerTest extends KernelTestCase
         }
 
         $match = $urlMatcher->match($requestUri);
-        if (!$match) {
-            return;
-        }
 
-        if ($match['_controller'] == DefaultController::class . '::currentApi') {
+        if ($match['_controller'] === DefaultController::class . '::currentApi') {
             $uut = new DefaultController();
             $response = $uut->currentApi($match['version']);
 
@@ -51,7 +48,7 @@ class DefaultControllerTest extends KernelTestCase
      *
      * @return array<string,array<string>>
      */
-    public function provideCurrentApiData(): array
+    public function provideCurrentApiPaths(): array
     {
         return [
             'non-API url' => [

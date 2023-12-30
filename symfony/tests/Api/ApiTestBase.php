@@ -25,6 +25,9 @@ abstract class ApiTestBase extends KernelTestCase
      * @param string $endpoint
      * @param string $method
      * @param array<string,bool|int|string> $data
+     *
+     * @return array
+     *   The status code and content of the call.
      */
     protected function handleJsonCall(string $endpoint, string $method = 'GET', array $data = []): array
     {
@@ -36,6 +39,7 @@ abstract class ApiTestBase extends KernelTestCase
         } elseif ($data) {
             // Pass data in URL query.
             $url .= '?' . http_build_query($data);
+            $data = null;
         }
 
         $response = static::API_REQUEST_SERVICE === 'http_kernel'
