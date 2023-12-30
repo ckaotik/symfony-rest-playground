@@ -1,6 +1,6 @@
 <article class="product{{ not product.status ? ' sold-out' }} {{ cssClass }}">
     <h3>
-        <a href="{{ path('app_product_show', { id: product.id }) }}">{{ product.name }}</a>
+        {{- product.name -}}
         <a href="{{ path('app_product_edit', { id: product.id }) }}" title="{{ 'Edit @name'|trans({ '@name': product.name}) }}" class="button button--icon">🖊️</a>
     </h3>
     <figure class="expand">
