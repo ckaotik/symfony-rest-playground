@@ -1,0 +1,24 @@
+{# Use this template to override form markup. #}
+{# @see vendor/symfony/twig-bridge/Resources/views/Form/form_div_layout.html.twig #}
+{% use 'form_div_layout.html.twig' %}
+
+{%- block form_start -%}
+    {% if not attr.id|default and form.vars.value.id|default %}
+        {% set attr = attr|merge({id: _self.formId(form)}) %}
+    {% endif %}
+    {{ parent() }}
+{%- endblock form_start -%}
+
+{%- block button_attributes -%}
+    {% if not attr['for']|default -%}
+        for="{{ _self.formId(form) }}"
+    {%- endif %}{{ parent() -}}
+{%- endblock button_attributes -%}
+
+{% macro formId(form) -%}
+    {% if form.parent -%}
+        {{ _self.formId(form.parent) }}
+    {%- else -%}
+        {{ form.vars.name }}_{{ form.vars.value.id }}_form
+    {%- endif %}
+{%- endmacro %}

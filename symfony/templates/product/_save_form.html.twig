@@ -1,0 +1,2 @@
+{% import 'form/form_custom_layout.html.twig' as form_macros %}
+<button class="button btn" form="{{ form_macros.formId(form) }}">{{ button_label|default('Save') }}</button>

@@ -8,7 +8,6 @@
     <section class="admin container">
         <h2>{{ 'Administration'|trans }}</h2>
         <div>
-            {# <h3>{{ 'Actions'|trans }}:</h3> #}
             <a href="{{ path('app_cart_add') }}" class="button">{{ 'Add new cart'|trans }}</a>
             <a href="{{ path('app_cart_clear', { id: cart.id }) }}" class="button">{{ 'Clear cart'|trans }}</a>
             <a href="{{ path('app_cart_delete', { id: cart.id }) }}" class="button">{{ 'Delete cart'|trans }}</a>
