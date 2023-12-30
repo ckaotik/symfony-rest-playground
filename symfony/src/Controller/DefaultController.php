@@ -23,7 +23,7 @@ class DefaultController extends AbstractController
      * Redirect unversioned API calls to current version.
      */
     #[Route('/api/{version}', requirements: ['version' => '(?!v\d+/).+'])]
-    public function currentApi(Request $request, string $version): Response
+    public function currentApi(string $version): Response
     {
         return $this->redirect(
             '/api/' . static::CURRENT_API_VERSION . '/' . $version,

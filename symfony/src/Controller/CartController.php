@@ -2,8 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Cart;
-use App\Repository\CartRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
