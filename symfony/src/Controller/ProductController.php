@@ -2,9 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\Cart;
 use App\Entity\Product;
 use App\Form\ProductType;
+use App\Repository\CartRepository;
 use App\Repository\ProductRepository;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,10 +18,18 @@ use Symfony\Component\Routing\Annotation\Route;
 class ProductController extends AbstractController
 {
     #[Route('/', name: 'app_product_index', methods: ['GET'])]
-    public function index(ProductRepository $productRepository): Response
+    public function index(EntityManagerInterface $entityManager): Response
     {
+        $cart = $entityManager->getRepository(Cart::class)->findOneBy([], ['updated' => 'DESC']);
+        if ($cart === null) {
+            $cart = new Cart(['comment' => 'Initial cart']);
+            $entityManager->persist($cart);
+            $entityManager->flush();
+        }
+
         return $this->render('product/index.html.twig', [
-            'products' => $productRepository->findAll(),
+            'products' => $entityManager->getRepository(Product::class)->findAll(),
+            'cart' => $cart,
         ]);
     }
 

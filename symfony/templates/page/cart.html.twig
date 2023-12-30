@@ -45,13 +45,14 @@
                     {%- endblock %}
 
                     {% block actions %}
+                        {% if not product.status or position.quantity <= 1 %}
+                            <a href="{{ path('app_cart_position_remove', {
+                                cart_id: cartId,
+                                id: position.id,
+                            }) }}" class="button" title="{{ 'Remove from cart'|trans }}">🪣</a>
+                        {% endif %}
                         {% if product.status %}
-                            {% if position.quantity <= 1 %}
-                                <a href="{{ path('app_cart_position_remove', {
-                                    cart_id: cartId,
-                                    id: position.id,
-                                }) }}" class="button" title="{{ 'Remove from cart'|trans }}">🪣</a>
-                            {% else %}
+                            {% if position.quantity > 1 %}
                                 <a href="{{ path('app_cart_position_update', {
                                     cart_id: cartId,
                                     id: position.id,

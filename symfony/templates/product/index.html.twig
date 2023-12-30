@@ -10,6 +10,7 @@
             {% for product in products %}
                 {% include 'component/product-card.html.twig' with {
                     product: product,
+                    cartId: cart.id,
                     cssClass: 'col col--4',
                 } only %}
             {% else %}
