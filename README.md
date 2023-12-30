@@ -35,32 +35,21 @@ A production setup should of course separate these, to allow for individual URLs
 
 ## FAQ
 
-<dl>
-<dt>Q: How can I use console commands?</dt>
-<dd>A: You can connect to the PHP container using `docker compose exec -it php /bin/bash`. When using Git for Windows, use `//bin/bash` (with an extra slash).</dd>
-
-<dt>Q: I need some data to use this!</dt>
-<dd>A: Use the default UI or add your own using the `db` container or [PHPMyAdmin](http://symfony.localhost:8080), or run `php bin/console doctrine:query:sql "$(< import/product.sql)"` to import some demo products.</dd>
-
-<dt>Q: How do I ensure my changes conform to the repo code standards?</dt>
-<dd>A: Some linters and sniffers are available inside of the symfony project:
-    <ul>
-        <li>`./vendor/bin/phpcs --standard=PSR12 src tests` to check php code formatting</li>
-        <li>`./vendor/bin/phpstan analyse --level=7 src tests` to run static analysis against your php code</li>
-        <li>`php bin/console lint:twig templates/` to lint Twig templates</li>
-    </ul>
-</dd>
-
-<dt>Q: What's next?</dt>
-<dd>Possible extensions could be...
-    <ul>
-        <li>[Frontend browser tests](https://symfony.com/doc/current/testing.html#application-tests), [1](https://symfony.com/doc/current/the-fast-track/de/17-tests.html)</li>
-        <li>[Translatable entities](https://github.com/KnpLabs/DoctrineBehaviors/blob/master/docs/translatable.md)</li>
-        <li>More/proper [DTO mapping](https://symfony.com/blog/new-in-symfony-6-3-mapping-request-data-to-typed-objects)</li>
-        <li>And so much more!</li>
-    </ul>
-</dd>
-</dl>
+- Q: How can I use console commands?  
+  A: You can connect to the PHP container using `docker compose exec -it php /bin/bash`. When using Git for Windows, use `//bin/bash` (with an extra slash).
+- Q: I need some data to use this!  
+  A: Use the default UI or add your own using the `db` container or [PHPMyAdmin](http://symfony.localhost:8080), or run `php bin/console doctrine:query:sql "$(< import/product.sql)"` to import some demo products.
+- Q: How do I ensure my changes conform to the repo code standards?  
+  A: Some linters and sniffers are available inside of the symfony project:
+    - `./vendor/bin/phpcs --standard=PSR12 src tests` to check php code formatting
+    - `./vendor/bin/phpstan analyse --level=7 src tests` to run static analysis against your php code
+    - `php bin/console lint:twig templates/` to lint Twig templates
+- Q: What's next?  
+  A: Possible extensions could be...
+    - [Frontend browser tests](https://symfony.com/doc/current/testing.html#application-tests), [1](https://symfony.com/doc/current/the-fast-track/de/17-tests.html)
+    - [Translatable entities](https://github.com/KnpLabs/DoctrineBehaviors/blob/master/docs/translatable.md)
+    - More/proper [DTO mapping](https://symfony.com/blog/new-in-symfony-6-3-mapping-request-data-to-typed-objects)
+    - And so much more!
 
 ## API Endpoints
 
