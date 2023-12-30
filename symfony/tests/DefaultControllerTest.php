@@ -67,7 +67,7 @@ class DefaultControllerTest extends KernelTestCase
                 null, '/api/v1337/carts/',
             ],
             'partly versioned API url' => [
-                null, '/api/v/carts/',
+                '/api/v1/v/carts/', '/api/v/carts/',
             ],
             'unknown route' => [
                 null, '/foo',
