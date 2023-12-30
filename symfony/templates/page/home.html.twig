@@ -1,11 +1,30 @@
 {% extends 'base.html.twig' %}
 
+{% block header %}{% endblock %}
+
 {% block body %}
     <div class="container">
         <p>This is a test project. It does in no way aspire to be great, but it <em>should</em> be quite usable to get an impression of what's easily done with Symfony regarding REST services.</p>
+
+        <p>Some points of interest are listed below. The Products use backend access and the CRUD pages are bland and simply auto-generated. Meanwhile, most cart interactions are API-based. But do not fret, take a look around and feel right at home!</p>
+
         <ul>
-            <li><a href="{{ hostname }}:8080" target="_blank">phpMyAdmin</a></li>
-            <li><a href="/api">REST API</a>, e.g. for <a href="{{ path('products.list') }}">products</a></li>
+            <li>
+                <span>The REST API lives under <code>/api/v1</code>, including:</span>
+                <ul>
+                    <li><a href="{{ path('products.list') }}">GET products</a> and family</li>
+                    <li><a href="{{ path('carts.list') }}">GET carts</a> and family</li>
+                </ul>
+            </li>
+            <li>
+                <span>The frontend lives right here:</span>
+                <ul>
+                    <li><a href="{{ path('home') }}">Homepage (this one right here)</a></li>
+                    <li><a href="{{ path('app_product_index') }}">View products</a></li>
+                    <li><a href="{{ path('app_cart_index') }}">View cart</a></li>
+                </ul>
+            </li>
+            <li><a href="{{ hostname }}:8080" target="_blank">Browse phpMyAdmin</a></li>
         </ul>
     </div>
 {% endblock %}
