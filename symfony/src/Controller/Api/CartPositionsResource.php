@@ -113,13 +113,13 @@ class CartPositionsResource extends AbstractController {
         try {
             $cart = $this->entityManager->getRepository(Cart::class)->find($cart_id);
             if (!$cart) {
-                throw new InvalidArgumentException('Invalid cart id');
+                throw new InvalidArgumentException('Invalid cart id.');
             }
 
             /** \App\Entity\Product $product */
             $product = $idProduct ? $this->entityManager->getRepository(Product::class)->find($idProduct) : null;
             if (!$product) {
-                throw new InvalidArgumentException('Invalid product id');
+                throw new InvalidArgumentException('Invalid product id.');
             }
 
             $entity = new CartPosition();
@@ -168,18 +168,19 @@ class CartPositionsResource extends AbstractController {
         try {
             $cart = $this->entityManager->getRepository(Cart::class)->find($cart_id);
             if (!$cart) {
-                throw new InvalidArgumentException('Invalid cart id');
+                throw new InvalidArgumentException('Invalid cart id.');
             }
 
             /** @var \App\Entity\CartPosition $entity */
             $entity = $this->entityRepository->find($id) ?: new CartPosition();
+            $isNew = $entity->getId() !== null;
 
             /** \App\Entity\Product $product */
             $product = $idProduct
                 ? $this->entityManager->getRepository(Product::class)->find($idProduct)
                 : $entity->getProduct();
             if (!$product) {
-                throw new InvalidArgumentException('Invalid product id');
+                throw new InvalidArgumentException('Invalid product id.');
             }
 
             $entity
@@ -196,6 +197,15 @@ class CartPositionsResource extends AbstractController {
             );
         }
 
-        return $this->json([]);
+        return $this->json($entity, $isNew ? JsonResponse::HTTP_CREATED : JsonResponse::HTTP_ACCEPTED, [
+            'Location' => $this->generateUrl(
+                'cart_positions.get',
+                [
+                    'cart_id' => $cart->getId(),
+                    'id' => $entity->getId(),
+                ],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            ),
+        ]);
     }
 }

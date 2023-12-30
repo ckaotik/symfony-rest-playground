@@ -28,8 +28,6 @@ class ProductsResource extends AbstractController {
 
     /**
      * Get a list of all products.
-     *
-     * @param \Symfony\Component\HttpFoundation\Request $request
      */
     #[Route('/', name: 'products.list', methods: ['GET'])]
     public function list(Request $request): JsonResponse {
@@ -43,8 +41,6 @@ class ProductsResource extends AbstractController {
 
     /**
      * Create a new product.
-     *
-     * @param \Symfony\Component\HttpFoundation\Request $request
      */
     #[Route('/', name: 'products.add', methods: ['POST'])]
     public function add(Request $request): JsonResponse {
