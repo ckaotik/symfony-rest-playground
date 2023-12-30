@@ -174,6 +174,11 @@ class CartController extends AbstractController
     }
 
     /**
+     * @param string $endpoint
+     * @param string $method
+     * @param array<mixed> $request
+     * @param array<mixed> $query
+     *
      * @todo Figure out why local Docker setup refuses to connect to our own URLs via http_client.
      */
     protected function handleApiRequest(
@@ -193,6 +198,6 @@ class CartController extends AbstractController
             ->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
 
 
-        return json_decode($response->getContent());
+        return json_decode($response->getContent() ?: '');
     }
 }

@@ -4,10 +4,9 @@ namespace App\Controller\Api;
 
 use App\Entity\Cart;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\Persistence\ObjectRepository;
+use Doctrine\ORM\EntityRepository;
 use Exception;
 use InvalidArgumentException;
-use stdClass;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,7 +17,11 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 class CartsResource extends AbstractController
 {
     protected EntityManagerInterface $entityManager;
-    protected ObjectRepository $entityRepository;
+
+    /**
+     * @var \Doctrine\ORM\EntityRepository<\App\Entity\Cart> $entityRepository
+     */
+    protected EntityRepository $entityRepository;
 
     protected const MAX_RESULTS = 50;
 
@@ -37,8 +40,8 @@ class CartsResource extends AbstractController
     #[Route('/', name: 'carts.list', methods: ['GET'])]
     public function list(Request $request): JsonResponse
     {
-        $limit = min($request->query->get('limit') ?? INF, static::MAX_RESULTS);
-        $offset = $request->query->get('offset') ?? 0;
+        $limit = min($request->query->get('limit', INF), static::MAX_RESULTS);
+        $offset = intval($request->query->get('offset', null));
 
         return $this->json(
             $this->entityRepository->findBy([], ['id' => 'ASC'], $limit, $offset)
@@ -87,11 +90,11 @@ class CartsResource extends AbstractController
     #[Route('/{id}', name: 'carts.delete', methods: ['DELETE'])]
     public function delete(int $id): JsonResponse
     {
-        /** @var \App\Entity\Cart $entity */
+        /** @var \App\Entity\Cart|null $entity */
         $entity = $this->entityManager->getRepository(Cart::class)->find($id);
 
         try {
-            if (!$entity) {
+            if ($entity === null) {
                 throw new InvalidArgumentException('Invalid cart id.');
             }
 

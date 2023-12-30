@@ -5,6 +5,9 @@ namespace App\Repository;
 use App\Entity\Product;
 use Doctrine\Persistence\ObjectRepository;
 
+/**
+ * @extends ObjectRepository<Product>
+ */
 interface ProductRepositoryInterface extends ObjectRepository
 {
    /**

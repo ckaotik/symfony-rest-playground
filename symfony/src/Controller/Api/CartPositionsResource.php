@@ -6,7 +6,7 @@ use App\Entity\Cart;
 use App\Entity\CartPosition;
 use App\Entity\Product;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\Persistence\ObjectRepository;
+use Doctrine\ORM\EntityRepository;
 use Exception;
 use InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,7 +22,11 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 class CartPositionsResource extends AbstractController
 {
     protected EntityManagerInterface $entityManager;
-    protected ObjectRepository $entityRepository;
+
+    /**
+     * @var \Doctrine\ORM\EntityRepository<\App\Entity\CartPosition> $entityRepository
+     */
+    protected EntityRepository $entityRepository;
 
     protected const MAX_RESULTS = 50;
 
@@ -42,7 +46,7 @@ class CartPositionsResource extends AbstractController
     public function list(Request $request, int $cart_id): JsonResponse
     {
         $limit = min($request->query->get('limit') ?? INF, static::MAX_RESULTS);
-        $offset = $request->query->get('offset') ?? 0;
+        $offset = intval($request->query->get('offset', 0));
 
         return $this->json(
             $this->entityRepository->findBy([
@@ -90,7 +94,7 @@ class CartPositionsResource extends AbstractController
     {
         try {
             $entity = $this->entityRepository->find($id);
-            if (!$entity) {
+            if ($entity === null) {
                 throw new InvalidArgumentException('Invalid cart position id.');
             }
 
@@ -113,7 +117,7 @@ class CartPositionsResource extends AbstractController
     public function add(Request $request, int $cart_id): JsonResponse
     {
         $idProduct = $request->request->get('product');
-        $quantity = $request->request->get('quantity');
+        $quantity = intval($request->request->get('quantity', null));
 
         try {
             $cart = $this->entityManager->getRepository(Cart::class)->find($cart_id);
@@ -131,7 +135,7 @@ class CartPositionsResource extends AbstractController
             $entity
                 ->setCart($cart)
                 ->setProduct($product)
-                ->setQuantity($quantity ?? $entity->getQuantity());
+                ->setQuantity($quantity ?: $entity->getQuantity());
 
             $this->entityManager->persist($entity);
             $this->entityManager->flush();
@@ -172,7 +176,7 @@ class CartPositionsResource extends AbstractController
     public function update(Request $request, int $cart_id, int $id): JsonResponse
     {
         $idProduct = $request->request->get('product');
-        $quantity = $request->request->get('quantity');
+        $quantity = intval($request->request->get('quantity', null));
 
         try {
             $cart = $this->entityManager->getRepository(Cart::class)->find($cart_id);
@@ -195,7 +199,7 @@ class CartPositionsResource extends AbstractController
             $entity
                 ->setCart($cart)
                 ->setProduct($product)
-                ->setQuantity($quantity ?? $entity->getQuantity());
+                ->setQuantity($quantity ?: $entity->getQuantity());
 
             $this->entityManager->persist($entity);
             $this->entityManager->flush();

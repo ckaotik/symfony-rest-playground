@@ -10,9 +10,6 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 class Product
 {
-    private const STATUS_INACTIVE = false;
-    private const STATUS_ACTIVE = true;
-
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -39,10 +36,12 @@ class Product
     private ?\DateTimeInterface $created = null;
 
     #[ORM\Column]
-    private ?bool $status = self::STATUS_INACTIVE;
+    private ?bool $status = false;
 
     /**
      * Provide defaults during construction.
+     *
+     * @param array<string, mixed> $initialValues
      */
     public function __construct(array $initialValues = [])
     {

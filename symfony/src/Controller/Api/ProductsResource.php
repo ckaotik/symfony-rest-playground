@@ -5,6 +5,7 @@ namespace App\Controller\Api;
 use App\Entity\Product;
 use App\Repository\ProductRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,7 +26,12 @@ class ProductsResource extends AbstractController
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
-        $this->entityRepository = $entityManager->getRepository(Product::class);
+
+        /**
+         * @var \App\Repository\ProductRepositoryInterface $entityRepository
+         */
+        $entityRepository = $entityManager->getRepository(Product::class);
+        $this->entityRepository = $entityRepository;
     }
 
     /**
@@ -34,8 +40,8 @@ class ProductsResource extends AbstractController
     #[Route('/', name: 'products.list', methods: ['GET'])]
     public function list(Request $request): JsonResponse
     {
-        $limit = min($request->query->get('limit') ?? INF, static::MAX_RESULTS);
-        $offset = $request->query->get('offset') ?? 0;
+        $limit = min($request->query->get('limit', INF), static::MAX_RESULTS);
+        $offset = intval($request->query->get('offset', null));
 
         return $this->json(
             $this->entityRepository->findBy([], ['id' => 'ASC'], $limit, $offset)

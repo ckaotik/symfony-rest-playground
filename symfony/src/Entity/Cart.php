@@ -20,6 +20,9 @@ class Cart
     #[ORM\Column(type: Types::TEXT)]
     private ?string $comment = '';
 
+    /**
+     * @var \Doctrine\Common\Collections\Collection<int, \App\Entity\CartPosition> $positions
+     */
     #[ORM\OneToMany(mappedBy: 'cart', targetEntity: CartPosition::class, orphanRemoval: true)]
     private Collection $positions;
 
@@ -36,6 +39,8 @@ class Cart
 
     /**
      * Provide defaults during construction.
+     *
+     * @param array<string, mixed> $initialValues
      */
     public function __construct(array $initialValues = [])
     {
