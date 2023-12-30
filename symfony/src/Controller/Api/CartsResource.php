@@ -35,7 +35,7 @@ class CartsResource extends AbstractController {
      */
     #[Route('/', name: 'carts.list', methods: ['GET'])]
     public function list(Request $request): JsonResponse {
-        $limit = $request->query->get('limit') ?? static::MAX_RESULTS;
+        $limit = min($request->query->get('limit') ?? INF, static::MAX_RESULTS);
         $offset = $request->query->get('offset') ?? 0;
 
         return $this->json(
