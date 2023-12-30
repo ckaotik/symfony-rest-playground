@@ -2,14 +2,25 @@
 
 A simple example project for a Symfony-based REST API.
 
-## Installation
+## Setup
 
 1. Create your `.env` file based on the provided `.env.example`.
 2. Start the containers using `docker compose up --build -d`
 3. Add `symfony.localhost` to your `etc/hosts` file.
+4. From here on, all commands should be run inside of the `php` service.
 4. Setup database structure: Run `php bin/console doctrine:migrations:migrate` inside the `php` service.
 
 The project can be reached under https://symfony.localhost, and PHPmyAdmin is available under http://symfony.localhost:8080.
+
+### Tests
+
+1. Create a test database:
+  `DATABASE_URL=mysql://root:root@db:3306/symfony php bin/console doctrine:database:create --env=test`
+2. Grant permissions:
+  `DATABASE_URL=mysql://root:root@db:3306/symfony php bin/console doctrine:query:sql --env=test "GRANT ALL PRIVILEGES ON symfony_test.* TO 'symfony'@'%';"`
+2. Install tables:
+  `php bin/console doctrine:migrations:migrate -n --env=test`
+3. Run tests using `php bin/phpunit`
 
 ## Structure
 
