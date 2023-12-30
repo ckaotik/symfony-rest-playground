@@ -52,8 +52,8 @@ class CartPositionsResource extends AbstractController {
     /**
      * Remove all positions from cart.
      */
-    #[Route('/', name: 'cart_positions.delete', methods: ['DELETE'])]
-    public function delete(int $cart_id): JsonResponse {
+    #[Route('/', name: 'cart_positions.clear', methods: ['DELETE'])]
+    public function clear(int $cart_id): JsonResponse {
         /** @var \App\Entity\Cart $entity */
         $entity = $this->entityManager->getRepository(Cart::class)->find($cart_id);
         foreach ($entity->getPositions() as $cartPosition) {
@@ -77,6 +77,29 @@ class CartPositionsResource extends AbstractController {
                 UrlGeneratorInterface::ABSOLUTE_URL
             ),
         ]);
+    }
+
+    /**
+     * Remove all positions from cart.
+     */
+    #[Route('/{id}', name: 'cart_positions.delete', methods: ['DELETE'])]
+    public function delete(int $cart_id, int $id): JsonResponse {
+        try {
+            $entity = $this->entityRepository->find($id);
+            if (!$entity) {
+                throw new InvalidArgumentException('Invalid cart position id.');
+            }
+
+            $this->entityManager->remove($entity);
+            $this->entityManager->flush();
+        } catch (Exception $exception) {
+            return $this->json(
+                ['error' => $exception->getMessage()],
+                JsonResponse::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+
+        return $this->json(null, JsonResponse::HTTP_NO_CONTENT);
     }
 
     /**
@@ -148,14 +171,17 @@ class CartPositionsResource extends AbstractController {
                 throw new InvalidArgumentException('Invalid cart id');
             }
 
+            /** @var \App\Entity\CartPosition $entity */
+            $entity = $this->entityRepository->find($id) ?: new CartPosition();
+
             /** \App\Entity\Product $product */
-            $product = $idProduct ? $this->entityManager->getRepository(Product::class)->find($idProduct) : null;
+            $product = $idProduct
+                ? $this->entityManager->getRepository(Product::class)->find($idProduct)
+                : $entity->getProduct();
             if (!$product) {
                 throw new InvalidArgumentException('Invalid product id');
             }
 
-            /** @var \App\Entity\CartPosition $entity */
-            $entity = $this->entityRepository->find($id) ?: new CartPosition();
             $entity
                 ->setCart($cart)
                 ->setProduct($product)

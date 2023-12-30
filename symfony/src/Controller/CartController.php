@@ -10,9 +10,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @todo Figure out why local Docker setup refuses to connect to our own URLs via http_client.
- */
 class CartController extends AbstractController {
     /**
      * Create a new cart.
@@ -38,7 +35,7 @@ class CartController extends AbstractController {
     /**
      * Delete a cart.
      */
-    #[Route('/cart/{id}/delete', name: 'app_cart_delete')]
+    #[Route('/cart/{id}/delete', name: 'app_cart_delete', requirements: ['id' => '\d+'])]
     public function delete(int $id): Response
     {
         $result = $this->handleApiRequest('/carts/' . $id, 'DELETE');
@@ -57,7 +54,7 @@ class CartController extends AbstractController {
     /**
      * Clear cart.
      */
-    #[Route('/cart/{id}/clear', name: 'app_cart_clear')]
+    #[Route('/cart/{id}/clear', name: 'app_cart_clear', requirements: ['id' => '\d+'])]
     public function clear(int $id): Response
     {
         $result = $this->handleApiRequest('/carts/' . $id . '/positions/', 'DELETE');
@@ -71,6 +68,84 @@ class CartController extends AbstractController {
         $this->addFlash('success', sprintf('Cleared cart #%d', $id));
 
         return $this->redirectToRoute('app_cart_index');
+    }
+
+    /**
+     * Remove product from cart.
+     */
+    #[Route(
+        path: '/cart/{cart_id}/remove/{id}',
+        name: 'app_cart_position_remove',
+        requirements: [
+            'cart_id' => '\d+',
+            'id' => '\d+',
+        ],
+    )]
+    public function removePosition(int $cart_id, int $id): Response
+    {
+        $result = $this->handleApiRequest('/carts/' . $cart_id . '/positions/' . $id, 'DELETE');
+
+        if (is_object($result) && isset($result->error)) {
+            $this->addFlash('error', sprintf('Failed to remove cart position %d: %s', $id, $result->error));
+        } else {
+            $this->addFlash('success', sprintf('Removed cart position %d', $id));
+        }
+
+        return $this->redirectToRoute('app_cart_show', ['id' => $cart_id]);
+    }
+
+    /**
+     * Add product to cart.
+     */
+    #[Route(
+        path: '/cart/{cart_id}/add/{product_id}',
+        name: 'app_cart_position_add',
+        requirements: [
+            'cart_id' => '\d+',
+            'product_id' => '\d+',
+        ],
+    )]
+    public function addPosition(Request $request, int $cart_id, int $product_id): Response
+    {
+        $result = $this->handleApiRequest('/carts/' . $cart_id . '/positions/' . $product_id, 'POST', [
+            'product' => $product_id,
+            'quantity' => $request->query->get('quantity'),
+        ]);
+
+        if (is_object($result) && isset($result->error)) {
+            $this->addFlash('error', sprintf('Failed to add product to cart: %s', $result->error));
+        } else {
+            $this->addFlash('success', sprintf('Added product to cart.'));
+        }
+
+        return $this->redirectToRoute('app_cart_show', ['id' => $cart_id]);
+    }
+
+    /**
+     * Update product in cart.
+     */
+    #[Route(
+        path: '/cart/{cart_id}/update/{id}',
+        name: 'app_cart_position_update',
+        requirements: [
+            'cart_id' => '\d+',
+            'id' => '\d+',
+        ],
+    )]
+    public function updatePosition(Request $request, int $cart_id, int $id): Response
+    {
+        $result = $this->handleApiRequest('/carts/' . $cart_id . '/positions/' . $id, 'PUT', [
+            'product' => $request->query->get('product'),
+            'quantity' => $request->query->get('quantity'),
+        ]);
+
+        if (is_object($result) && isset($result->error)) {
+            $this->addFlash('error', sprintf('Failed to update cart product: %s', $result->error));
+        } else {
+            $this->addFlash('success', sprintf('Updated cart product.'));
+        }
+
+        return $this->redirectToRoute('app_cart_show', ['id' => $cart_id]);
     }
 
     /**

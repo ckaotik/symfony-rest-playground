@@ -24,21 +24,8 @@ class CartPosition
     #[ORM\JoinColumn(nullable: false)]
     private ?Product $product = null;
 
-    #[ORM\Column]
+    #[ORM\Column(options: ['unsigned' => true])]
     private ?int $quantity = 1;
-
-    /**
-     * Provide defaults during construction.
-     */
-    /* public function __construct(array $initialValues = [])
-    {
-        if (isset($initialValues['product'])) {
-            $this->setProduct($initialValues['product']);
-        }
-        if (isset($initialValues['quantity'])) {
-            $this->setQuantity(intval($initialValues['quantity']));
-        }
-    } */
 
     public function getId(): ?int
     {

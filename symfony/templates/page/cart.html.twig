@@ -38,22 +38,36 @@
                     product: position.product,
                     cssClass: 'col col--4',
                     cartId: cart.id,
-                    quantity: position.quantity,
+                    position: position,
                 } only %}
                     {% block adminActions -%}
-                        <span> &times; {{ quantity }}</span>
+                        <span> &times; {{ position.quantity }}</span>
                     {%- endblock %}
 
                     {% block actions %}
                         {% if product.status %}
-                            <a href="#todo" class="button">➖</a>
-                            <a href="#todo" class="button">➕</a>
+                            {% if position.quantity <= 1 %}
+                                <a href="{{ path('app_cart_position_remove', {
+                                    cart_id: cartId,
+                                    id: position.id,
+                                }) }}" class="button" title="{{ 'Remove from cart'|trans }}">🪣</a>
+                            {% else %}
+                                <a href="{{ path('app_cart_position_update', {
+                                    cart_id: cartId,
+                                    id: position.id,
+                                    quantity: position.quantity - 1,
+                                }) }}" class="button">➖</a>
+                            {% endif %}
+                            <a href="{{ path('app_cart_position_update', {
+                                cart_id: cartId,
+                                id: position.id,
+                                quantity: position.quantity + 1,
+                            }) }}" class="button">➕</a>
                         {% endif %}
-                        <a href="#todo" class="button" title="{{ 'Remove from cart'|trans }}">🪣</a>
                     {% endblock %}
 
                     {% block price %}
-                        {{ (product.price * quantity)|format_currency('EUR') }}
+                        {{ (product.price * position.quantity)|format_currency('EUR') }}
                     {% endblock %}
                 {% endembed %}
             {% else %}
