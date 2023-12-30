@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\CartRepository;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -19,12 +20,32 @@ class Cart
     #[ORM\Column(type: Types::TEXT)]
     private ?string $comment = '';
 
-    #[ORM\ManyToMany(targetEntity: Product::class)]
-    private Collection $products;
+    #[ORM\OneToMany(mappedBy: 'cart', targetEntity: CartPosition::class, orphanRemoval: true)]
+    private Collection $positions;
 
-    public function __construct()
+    #[ORM\Column(
+        type: Types::DATETIME_MUTABLE,
+        options: [
+            "default" => "CURRENT_TIMESTAMP"
+        ]
+    )]
+    private ?\DateTimeInterface $created = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $updated = null;
+
+    /**
+     * Provide defaults during construction.
+     */
+    public function __construct(array $initialValues = [])
     {
-        $this->products = new ArrayCollection();
+        $this->positions = new ArrayCollection();
+
+        if (isset($initialValues['comment'])) {
+            $this->setComment((string)$initialValues['comment']);
+        }
+
+        $this->setCreated($initialValues['created'] ?? new DateTime('now'));
     }
 
     public function getId(): ?int
@@ -45,25 +66,59 @@ class Cart
     }
 
     /**
-     * @return Collection<int, Product>
+     * @return Collection<int, CartPosition>
      */
-    public function getProducts(): Collection
+    public function getPositions(): Collection
     {
-        return $this->products;
+        return $this->positions;
     }
 
-    public function addProduct(Product $product): static
+    public function addPosition(CartPosition $position): static
     {
-        if (!$this->products->contains($product)) {
-            $this->products->add($product);
+        if (!$this->positions->contains($position)) {
+            $this->positions->add($position);
+            $position->setCart($this);
         }
+
+        $this->setUpdated(new DateTime('now'));
 
         return $this;
     }
 
-    public function removeProduct(Product $product): static
+    public function removePosition(CartPosition $position): static
     {
-        $this->products->removeElement($product);
+        if ($this->positions->removeElement($position)) {
+            // set the owning side to null (unless already changed)
+            if ($position->getCart() === $this) {
+                $position->setCart(null);
+            }
+        }
+
+        $this->setUpdated(new DateTime('now'));
+
+        return $this;
+    }
+
+    public function getCreated(): ?\DateTimeInterface
+    {
+        return $this->created;
+    }
+
+    public function setCreated(\DateTimeInterface $created): static
+    {
+        $this->created = $created;
+
+        return $this;
+    }
+
+    public function getUpdated(): ?\DateTimeInterface
+    {
+        return $this->updated;
+    }
+
+    public function setUpdated(?\DateTimeInterface $updated): static
+    {
+        $this->updated = $updated;
 
         return $this;
     }
