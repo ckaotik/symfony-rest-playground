@@ -114,31 +114,12 @@ class CartPositionsResource extends AbstractController
      * Add a position to the cart.
      */
     #[Route('/', name: 'cart_positions.add', methods: ['POST'])]
-    public function add(Request $request, int $cart_id): JsonResponse
+    public function add(Request $request): JsonResponse
     {
-        $idProduct = $request->request->get('product');
-        $quantity = intval($request->request->get('quantity', null));
+        $entity = new CartPosition();
 
         try {
-            $cart = $this->entityManager->getRepository(Cart::class)->find($cart_id);
-            if (!$cart) {
-                throw new InvalidArgumentException('Invalid cart id.');
-            }
-
-            /** \App\Entity\Product $product */
-            $product = $idProduct ? $this->entityManager->getRepository(Product::class)->find($idProduct) : null;
-            if (!$product) {
-                throw new InvalidArgumentException('Invalid product id.');
-            }
-
-            $entity = new CartPosition();
-            $entity
-                ->setCart($cart)
-                ->setProduct($product)
-                ->setQuantity($quantity ?: $entity->getQuantity());
-
-            $this->entityManager->persist($entity);
-            $this->entityManager->flush();
+            $this->updateEntityFromRequest($entity, $request);
         } catch (Exception $exception) {
             return $this->json(
                 ['error' => $exception->getMessage()],
@@ -150,7 +131,7 @@ class CartPositionsResource extends AbstractController
             'Location' => $this->generateUrl(
                 'cart_positions.get',
                 [
-                    'cart_id' => $cart->getId(),
+                    'cart_id' => $entity->getCart()->getId(),
                     'id' => $entity->getId(),
                 ],
                 UrlGeneratorInterface::ABSOLUTE_URL
@@ -169,40 +150,16 @@ class CartPositionsResource extends AbstractController
 
     /**
      * Update a position by id.
-     *
-     * @todo DRY: Refactor with cart_positions.add.
      */
     #[Route('/{id}', name: 'cart_positions.update', methods: ['PUT'], requirements: ['id' => '\d+'])]
-    public function update(Request $request, int $cart_id, int $id): JsonResponse
+    public function update(Request $request, int $id): JsonResponse
     {
-        $idProduct = $request->request->get('product');
-        $quantity = intval($request->request->get('quantity', null));
+        /** @var \App\Entity\CartPosition $entity */
+        $entity = $this->entityRepository->find($id) ?: new CartPosition();
+        $isNew = $entity->getId() !== null;
 
         try {
-            $cart = $this->entityManager->getRepository(Cart::class)->find($cart_id);
-            if (!$cart) {
-                throw new InvalidArgumentException('Invalid cart id.');
-            }
-
-            /** @var \App\Entity\CartPosition $entity */
-            $entity = $this->entityRepository->find($id) ?: new CartPosition();
-            $isNew = $entity->getId() !== null;
-
-            /** \App\Entity\Product $product */
-            $product = $idProduct
-                ? $this->entityManager->getRepository(Product::class)->find($idProduct)
-                : $entity->getProduct();
-            if (!$product) {
-                throw new InvalidArgumentException('Invalid product id.');
-            }
-
-            $entity
-                ->setCart($cart)
-                ->setProduct($product)
-                ->setQuantity($quantity ?: $entity->getQuantity());
-
-            $this->entityManager->persist($entity);
-            $this->entityManager->flush();
+            $this->updateEntityFromRequest($entity, $request);
         } catch (Exception $exception) {
             return $this->json(
                 ['error' => $exception->getMessage()],
@@ -214,11 +171,43 @@ class CartPositionsResource extends AbstractController
             'Location' => $this->generateUrl(
                 'cart_positions.get',
                 [
-                    'cart_id' => $cart->getId(),
+                    'cart_id' => $entity->getCart()->getId(),
                     'id' => $entity->getId(),
                 ],
                 UrlGeneratorInterface::ABSOLUTE_URL
             ),
         ]);
+    }
+
+    /**
+     * @param \App\Entity\CartPosition $entity
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     */
+    protected function updateEntityFromRequest(CartPosition &$entity, Request $request): void
+    {
+        $cart_id = $request->attributes->get('cart_id');
+        $idProduct = $request->request->get('product');
+        $quantity = intval($request->request->get('quantity', null));
+
+        $cart = $this->entityManager->getRepository(Cart::class)->find($cart_id);
+        if ($cart === null) {
+            throw new InvalidArgumentException(sprintf('Invalid cart id %s', $cart_id));
+        }
+
+        /** \App\Entity\Product $product */
+        $product = $idProduct
+            ? $this->entityManager->getRepository(Product::class)->find($idProduct)
+            : $entity->getProduct();
+        if (!$product) {
+            throw new InvalidArgumentException('Invalid product id.');
+        }
+
+        $entity
+            ->setCart($cart)
+            ->setProduct($product)
+            ->setQuantity($quantity ?: $entity->getQuantity());
+
+        $this->entityManager->persist($entity);
+        $this->entityManager->flush();
     }
 }
